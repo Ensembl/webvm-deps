@@ -1,0 +1,17 @@
+/GeneStoreNCMembers.pm/1.1/Mon Oct 25 13:02:19 2010//Tbranch-ensembl-65
+/GenomePrepareNCMembers.pm/1.1/Mon Oct 25 13:02:19 2010//Tbranch-ensembl-65
+/Infernal.pm/1.7/Tue Sep 20 11:47:37 2011//Tbranch-ensembl-65
+/Ktreedist.pm/1.7/Tue Sep 20 11:47:37 2011//Tbranch-ensembl-65
+/NCFastTrees.pm/1.4/Tue Sep 20 11:47:37 2011//Tbranch-ensembl-65
+/NCGenomicAlignment.pm/1.6/Thu Oct 27 11:44:55 2011//Tbranch-ensembl-65
+/NCGenomicTree.pm/1.5/Tue Sep 20 11:47:38 2011//Tbranch-ensembl-65
+/NCOrthoTree.pm/1.5/Thu Sep 15 09:29:37 2011//Tbranch-ensembl-65
+/NCRecoverEPO.pm/1.3/Fri Jul 22 15:11:41 2011//Tbranch-ensembl-65
+/NCRecoverSearch.pm/1.2/Tue Sep 20 11:47:38 2011//Tbranch-ensembl-65
+/NCSecStructTree.pm/1.6/Tue Sep 20 11:47:38 2011//Tbranch-ensembl-65
+/NCTreeBestMMerge.pm/1.9/Fri Oct 14 13:34:15 2011//Tbranch-ensembl-65
+/PrepareSecStructModels.pm/1.6/Tue Sep 20 11:47:38 2011//Tbranch-ensembl-65
+/RFAMClassify.pm/1.6/Tue Oct 25 15:16:38 2011//Tbranch-ensembl-65
+/RFAMLoadModels.pm/1.1/Mon Oct 25 13:02:20 2010//Tbranch-ensembl-65
+/SecStructModelTree.pm/1.5/Tue Sep 20 11:47:38 2011//Tbranch-ensembl-65
+D
