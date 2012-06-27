@@ -1,0 +1,38 @@
+/AnnotatedFeature.pm/1.11/Wed Sep 28 10:26:34 2011//Tbranch-ensembl-65
+/Array.pm/1.25/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/ArrayChip.pm/1.5/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/BindingMatrix.pm/1.16/Fri Jun 17 15:24:02 2011//Tbranch-ensembl-65
+/CellType.pm/1.9/Wed Jul 13 14:24:53 2011//Tbranch-ensembl-65
+/Channel.pm/1.9/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/Collector.pm/1.7/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/CoordSystem.pm/1.23/Thu Mar 31 14:38:11 2011//Tbranch-ensembl-65
+/DataSet.pm/1.41/Wed Sep 28 10:31:04 2011//Tbranch-ensembl-65
+/Experiment.pm/1.23/Thu Oct 27 13:05:20 2011//Tbranch-ensembl-65
+/ExperimentalChip.pm/1.17/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/ExperimentalGroup.pm/1.3/Wed Sep 28 10:31:52 2011//Tbranch-ensembl-65
+/ExperimentalSet.pm/1.10/Wed Feb 13 16:55:44 2008//Tbranch-ensembl-65
+/ExperimentalSubset.pm/1.3/Fri Sep 14 12:53:21 2007//Tbranch-ensembl-65
+/ExternalFeature.pm/1.6/Wed Sep 28 10:32:32 2011//Tbranch-ensembl-65
+/FeatureSet.pm/1.50/Mon Nov 28 13:39:04 2011//Tbranch-ensembl-65
+/FeatureType.pm/1.12/Thu Oct 20 15:25:53 2011//Tbranch-ensembl-65
+/Importer.pm/1.130/Thu Mar 31 14:39:57 2011//Tbranch-ensembl-65
+/InputSet.pm/1.9/Wed Sep 28 10:48:24 2011//Tbranch-ensembl-65
+/InputSubset.pm/1.2/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/MotifFeature.pm/1.11/Tue May 24 11:08:14 2011//Tbranch-ensembl-65
+/Probe.pm/1.27/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/ProbeFeature.pm/1.19/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/ProbeSet.pm/1.9/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/RegulatoryFeature.pm/1.39/Tue Oct 11 10:11:35 2011//Tbranch-ensembl-65
+/ResultFeature.pm/1.11/Mon Jan 10 11:27:34 2011//Tbranch-ensembl-65
+/ResultSet.pm/1.37/Fri Feb 11 14:53:45 2011//Tbranch-ensembl-65
+/SegmentationFeature.pm/1.2/Fri Oct 28 11:53:51 2011//Tbranch-ensembl-65
+/Set.pm/1.22/Wed Sep 28 10:50:01 2011//Tbranch-ensembl-65
+/SetFeature.pm/1.18/Wed Sep 28 15:23:13 2011//Tbranch-ensembl-65
+/Storable.pm/1.15/Thu Mar 31 14:40:18 2011//Tbranch-ensembl-65
+D/Collection////
+D/Collector////
+D/DBSQL////
+D/HiveConfig////
+D/Parsers////
+D/RunnableDB////
+D/Utils////
