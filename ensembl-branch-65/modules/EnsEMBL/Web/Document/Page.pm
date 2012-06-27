@@ -1,4 +1,4 @@
-# $Id: Page.pm,v 1.121 2011-11-08 16:01:36 sb23 Exp $
+# $Id: Page.pm,v 1.121.2.1 2012-02-02 10:03:53 hr5 Exp $
 
 package EnsEMBL::Web::Document::Page;
 
@@ -133,7 +133,6 @@ sub ajax_redirect {
     }
   } else {
     $r->headers_out->set('Location' => $url);
-    $r->err_headers_out->set('Location' => $url);
     $r->status(Apache2::Const::REDIRECT);
   }
 }

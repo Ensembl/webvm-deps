@@ -9,7 +9,6 @@
 /Genome.pm/1.7/Wed Nov 24 09:36:26 2010//Tbranch-ensembl-65
 /Idhistory.pm/1.7/Fri Mar  4 15:04:31 2011//Tbranch-ensembl-65
 /Jalview.pm/1.3/Mon Jul 12 15:08:18 2010//Tbranch-ensembl-65
-/Location.pm/1.5/Mon Nov 28 14:02:28 2011//Tbranch-ensembl-65
 /Marker.pm/1.3/Mon Jul 12 15:08:18 2010//Tbranch-ensembl-65
 /MiscFeature.pm/1.3/Mon Jul 12 15:08:18 2010//Tbranch-ensembl-65
 /MultipleAlignment.pm/1.2/Mon Jul 12 15:08:18 2010//Tbranch-ensembl-65
@@ -39,3 +38,4 @@
 D/Gene////
 D/Idhistory////
 D/Transcript////
+/Location.pm/1.5.2.1/Wed Jun 27 12:42:10 2012//Tbranch-ensembl-65

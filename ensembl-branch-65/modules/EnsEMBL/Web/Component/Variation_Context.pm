@@ -1,4 +1,4 @@
-# $Id: Variation_Context.pm,v 1.15 2011-09-13 15:51:18 sb23 Exp $
+# $Id: Variation_Context.pm,v 1.15.4.1 2012-01-16 17:10:20 jh15 Exp $
 
 package EnsEMBL::Web::Component::Variation_Context;
 
@@ -109,8 +109,8 @@ sub content {
     $html     .= "<h2>Features overlapping $vname:</h2><br />";
   }
   
-  $html .= $self->structrual_variation_table($slice, 'Structural variants',         'sv',  'get_all_StructuralVariationFeatures', 1);
-  $html .= $self->structrual_variation_table($slice, 'Copy number variants probes', 'cnv', 'get_all_CopyNumberVariantProbeFeatures');
+  $html .= $self->structural_variation_table($slice, 'Structural variants',         'sv',  'get_all_StructuralVariationFeatures', 1);
+  $html .= $self->structural_variation_table($slice, 'Copy number variants probes', 'cnv', 'get_all_CopyNumberVariantProbeFeatures');
   $html .= $self->regulatory_feature_table($var_slice,  $vname, $image_config);
   $html .= $self->constrained_element_table($var_slice, $vname);
   

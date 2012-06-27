@@ -1,4 +1,4 @@
-# $Id: supporting_evidence_transcript.pm,v 1.19 2011-08-23 08:53:34 sb23 Exp $
+# $Id: supporting_evidence_transcript.pm,v 1.19.2.1 2012-02-21 13:52:28 www-ens Exp $
 
 package EnsEMBL::Web::ImageConfig::supporting_evidence_transcript;
 
@@ -10,7 +10,7 @@ sub init {
   my $self = shift;
   
   $self->set_parameters({
-    label_width      => 100,
+    label_width      => 115,
     opt_empty_tracks => 0,
   });
 

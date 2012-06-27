@@ -7,7 +7,6 @@
 /Collector.pm/1.6/Thu Jun  9 14:01:03 2011//Tbranch-ensembl-65
 /ConfParser.pm/1.14/Mon Oct 17 14:19:31 2011//Tbranch-ensembl-65
 /ConfigRegistry.pm/1.35/Wed Jun  8 15:10:09 2011//Tbranch-ensembl-65
-/ConversionSupport.pm/1.43.2.2/Wed Dec 14 16:56:33 2011//Tbranch-ensembl-65
 /Converter.pm/1.11/Thu Jun  9 14:01:03 2011//Tbranch-ensembl-65
 /EasyArgv.pm/1.7/Wed Jan  5 15:10:10 2011//Tbranch-ensembl-65
 /Eprof.pm/1.16/Wed Jan  5 15:10:10 2011//Tbranch-ensembl-65
@@ -32,3 +31,4 @@
 D/Converter////
 D/IO////
 D/VegaCuration////
+/ConversionSupport.pm/1.43.2.3/Wed Jun 27 12:41:49 2012//Tbranch-ensembl-65

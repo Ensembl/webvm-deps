@@ -1,5 +1,4 @@
 /AlleleAdaptor.pm/1.6/Thu Oct 13 14:33:12 2011//Tbranch-ensembl-65
-/AlleleFeatureAdaptor.pm/1.30/Thu Oct 13 14:33:46 2011//Tbranch-ensembl-65
 /AlleleGroupAdaptor.pm/1.8/Tue Jan 11 17:44:37 2011//Tbranch-ensembl-65
 /AttributeAdaptor.pm/1.9/Tue Jun 21 09:35:50 2011//Tbranch-ensembl-65
 /BaseAdaptor.pm/1.12/Wed Nov 23 14:36:42 2011//Tbranch-ensembl-65
@@ -31,4 +30,5 @@
 /VariationGroupAdaptor.pm/1.7/Wed Jan  5 15:21:27 2011//Tbranch-ensembl-65
 /VariationGroupFeatureAdaptor.pm/1.6/Mon Jun 20 12:56:53 2011//Tbranch-ensembl-65
 /VariationSetAdaptor.pm/1.8/Fri Jun  3 16:42:55 2011//Tbranch-ensembl-65
+/AlleleFeatureAdaptor.pm/1.30.2.1/Wed Jun 27 12:41:58 2012//Tbranch-ensembl-65
 D

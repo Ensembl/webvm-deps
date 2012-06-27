@@ -1,4 +1,4 @@
-# $Id: Component.pm,v 1.221 2011-12-06 09:13:47 sb23 Exp $
+# $Id: Component.pm,v 1.221.2.1 2012-01-16 17:10:20 jh15 Exp $
 
 package EnsEMBL::Web::Component;
 
@@ -921,7 +921,7 @@ sub transcript_table {
   return qq{<div class="summary_panel">$html</div>};
 }
 
-sub structrual_variation_table {
+sub structural_variation_table {
   my ($self, $slice, $title, $table_id, $function, $open) = @_;
   my $hub = $self->hub;
   my $rows;

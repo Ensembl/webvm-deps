@@ -1,4 +1,4 @@
-# $Id: SelectOutput.pm,v 1.15 2011-11-29 12:06:43 sb23 Exp $
+# $Id: SelectOutput.pm,v 1.15.2.1 2012-01-11 14:38:10 it2 Exp $
 
 package EnsEMBL::Web::Component::UserData::SelectOutput;
 
@@ -73,7 +73,7 @@ sub content {
   $html .= $form->render;
 
   if ($code) {
-    my $nearest = $self->hub->session->get_data(code => $code)->{'nearest'};
+    my $nearest = $self->hub->session->get_data(code => $code) ?  $self->hub->session->get_data(code => $code)->{'nearest'} : undef;
     
     if ($nearest) {
       $html .= sprintf(qq{

@@ -1,4 +1,4 @@
-# $Id: Hub.pm,v 1.100 2011-11-10 16:01:56 sb23 Exp $
+# $Id: Hub.pm,v 1.104 2012-03-15 14:40:58 sb23 Exp $
 
 package EnsEMBL::Web::Hub;
 
@@ -189,7 +189,7 @@ sub database {
   my $self = shift;
 
   if ($_[0] =~ /compara/) {
-    return Bio::EnsEMBL::Registry->get_DBAdaptor('multi', $_[0]);
+    return Bio::EnsEMBL::Registry->get_DBAdaptor('multi', $_[0], 1);
   } else {
     return $self->databases->get_DBAdaptor(@_);
   }
@@ -369,20 +369,19 @@ sub multi_params {
 }
 
 sub parse_referer {
-  my $self = shift;
+  my $self         = shift;
   my $species_defs = $self->species_defs;
-  
-  my $uri = $ENV{'HTTP_REFERER'}; 
-  $uri    =~ s/^(https?:\/\/.*?)?\///i;
-  $uri    =~ s/[;&]$//;
+  my $servername   = $species_defs->ENSEMBL_SERVERNAME;
+  my $uri          = $ENV{'HTTP_REFERER'}; 
+     $uri          =~ s/^(https?:\/\/.*?)?\///i;
+     $uri          =~ s/[;&]$//;
   
   my ($url, $query_string) = split /\?/, $uri;
-  
   my @path = split /\//, $url;
   
   unshift @path, 'common' unless $path[0] =~ /(Multi|common)/ || $species_defs->valid_species($path[0]);
-
-  return {absolute_url => $ENV{'HTTP_REFERER'}} unless $self->valid_type($path[1]);
+  
+  return { absolute_url => $ENV{'HTTP_REFERER'} } unless $ENV{'HTTP_REFERER'} =~ /$servername/ && $species_defs->OBJECT_TO_SCRIPT->{$path[1]};
 
   my ($species, $type, $action, $function) = @path;
 
@@ -430,11 +429,6 @@ sub parse_referer {
     uri              => "/$uri",
     absolute_url     => $ENV{'HTTP_REFERER'}
   };
-}
-
-sub valid_type {
-  ## Checks whether the given string is a valid 'Type'
-  return exists $SiteDefs::OBJECT_TO_SCRIPT->{pop @_};
 }
 
 sub filename {
@@ -551,14 +545,18 @@ sub get_viewconfig {
   my $cache_code = "${type}::$component";
   
   return undef unless $session;
-  return $session->view_configs->{$cache_code} if $session->view_configs->{$cache_code};
   
-  my $module_name = $self->get_module_names('ViewConfig', $type, $component);
-  return unless $module_name;
+  my $config = $session->view_configs->{$cache_code};
   
-  my $config = $module_name->new($type, $component, $self);
+  if (!$config) {
+    my $module_name = $self->get_module_names('ViewConfig', $type, $component);
+    return unless $module_name;
+    
+    $config = $module_name->new($type, $component, $self);
+    
+    $session->apply_to_view_config($config, $type, $cache_code, $config->code); # $config->code and $cache_code can be different
+  }
   
-  $session->apply_to_view_config($config, $type, $cache_code, $config->code); # $config->code and $cache_code can be different
   $self->viewconfig = $config if $cache;
   
   return $config;

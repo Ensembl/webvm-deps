@@ -1,4 +1,4 @@
-# $Id: Transcript.pm,v 1.174 2011-10-28 16:18:04 it2 Exp $
+# $Id: Transcript.pm,v 1.174.2.2 2012-01-23 15:10:30 ds23 Exp $
 
 package EnsEMBL::Web::Configuration::Transcript;
 

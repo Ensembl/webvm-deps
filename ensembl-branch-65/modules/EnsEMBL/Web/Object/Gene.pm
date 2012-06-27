@@ -1,4 +1,4 @@
-# $Id: Gene.pm,v 1.198.2.1 2011-12-22 17:29:27 st3 Exp $
+# $Id: Gene.pm,v 1.198.2.2 2012-01-13 15:32:45 nl2 Exp $
 
 package EnsEMBL::Web::Object::Gene;
 
@@ -172,7 +172,8 @@ sub get_xref_available{
       eval { 
         @db_links = @{$my_transcripts[$i]->get_all_DBLinks};
       };
-      for (my $j=0;  !$available && ($i< scalar @db_links); $j++) {
+            
+      for (my $j=0;  !$available && ($j< scalar @db_links); $j++) {
         $available = $available || ($db_links[$j]->type eq 'MISC') || ($db_links[$j]->type eq 'LIT');
       }      
     }
