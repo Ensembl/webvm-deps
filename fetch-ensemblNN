@@ -1,0 +1,35 @@
+#! /bin/bash
+# For regex match
+
+VSN=$1
+[[ "$VSN" =~ ^[0-9][0-9][0-9]? ]] || {
+    echo "Syntax: $0 <nn>
+
+Create ./ensembl-branch-nn/ from cvs.sanger.ac.uk
+
+REPLACING any existing directory of that name,
+
+stripping the CVS/ directories afterwards,
+
+then committing to Git.
+" >&2
+    exit 1
+}
+
+git diff --cached --quiet --exit-code && git diff --quiet --exit-code || {
+    echo "$0 aborting: Working copy is not clean" >&2
+    exit 2
+}
+
+
+rm -rf branch-ensembl-$VSN
+
+cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
+    -r branch-ensembl-$VSN \
+    -d ensembl-branch-$VSN \
+    ensembl-api ensembl-website
+
+find ensembl-branch-$VSN -type d -name CVS -print0 | xargs -r0 rm -rf
+
+git add -A ensembl-branch-$VSN
+git commit -m "$( basename $0 ) $VSN"
