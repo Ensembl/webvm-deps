@@ -1,0 +1,65 @@
+#########
+# Author:        jc3
+# Maintainer:    $Author: jc3 $
+# Created:       2009-04-09
+# Last Modified: $Date: 2009-04-09 10:36:25 $
+# Revision: $Revision: 1.2 $ 
+# Id: $Id: StopIPs.pm,v 1.2 2009-04-09 10:36:25 jc3 Exp $   
+package Website::StopIPs;
+use strict;
+use warnings;
+use Net::DNS;
+
+our $VERSION = 0.1;
+our $DEBUG = 1;
+
+sub new {
+  my ($class) = @_;
+  my $self = {};
+  bless $self,$class;
+  $self->_init();
+  return $self;
+}
+
+sub _init {
+  my ($self) = @_;
+  $self->{'lists'} = [
+		'zen.dnsbl.ja.net',
+		'bl.spamcop.net',
+	];
+  $self->{'blocked'} = 0;
+  $self->{'res'} = Net::DNS::Resolver->new();
+  return;
+}
+
+sub blacklisted {
+  my ($self,$ip) = @_;
+  return 1 unless $ip;
+  my $rev = join q(.), reverse(split(/\./mx,$ip));
+
+  my $blocked = 0;
+
+  foreach my $bl (@{$self->{'lists'}}) {
+	  my $ares = $self->{'res'}->search($rev.q(.).$bl,'A');
+  	if(defined($ares)) {
+      $DEBUG && warn "Found an A NAME\n";
+	   	my $txtres = $self->{'res'}->search($rev.q(.).$bl,'TXT');
+		  if(defined($txtres)) {
+        $DEBUG && warn "Found a TXT NAME\n";
+			  my @a = $txtres->answer;
+			  warn $bl.' ... '.$a[0]->rdatastr."\n";
+        $blocked += 1;
+  		}
+      else {
+	  		$DEBUG && warn $bl." ... A record found but no TXT record\n";
+  		}
+    }
+  }
+
+  if ($blocked > 0){
+    return 1;
+  }
+  return;
+}
+
+1;

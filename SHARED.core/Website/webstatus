@@ -1,0 +1,109 @@
+#!/usr/local/bin/perl -w
+#########
+# Author:        rmp
+# Maintainer:    $Author: jc3 $
+# Created:       2006-06-28
+# Last Modified: $Date: 2009-04-02 08:19:52 $
+#
+# Web server control script
+#
+package webstatus;
+use strict;
+use Getopt::Long;
+use lib qw(/apache/lib/);
+use lib qw(/chroot/web/WWW/SHARED_docs/lib/core);
+use lib qw(/WWW/SHARED_docs/lib/core);
+use Website::ServiceManager;
+use Sys::Hostname;
+
+our $VERSION  = do { my @r = (q$Revision: 1.13 $ =~ /\d+/g); sprintf "%d."."%03d" x $#r, @r };
+our $COLWIDTH = 5;
+our $DEBUG    = 0;
+$|            = 1;
+
+my $opts = {};
+&GetOptions(
+	    $opts,
+	    'c=s@',   # "cluster" to report on
+	    'v',      # Verbose
+            'h',      # help message 
+	   );
+
+if($opts->{'h'}) {
+  print qq($0 v$VERSION rmp\@sanger.ac.uk\n
+-c  <server|service> # query status of server
+-h                   # this help
+-v                   # verbose debugging
+);
+  exit 0;
+}
+
+if($opts->{'v'}) {
+  $Website::ServiceManager::DEBUG = $Website::Service::DEBUG = $DEBUG = 1;
+}
+
+my $arStatus  = [];
+push @$arStatus,  @{$opts->{'c'}}  if($opts->{'c'});
+push @$arStatus, hostname() unless (scalar @{$arStatus});
+
+my $servicemanager = Website::ServiceManager->new();
+my $servicecache   = {};
+my $servicenames   = {};
+my $maxnodenamelen = 0;
+
+for my $srv (@$arStatus) {
+  $servicecache->{$srv} ||= $servicemanager->service($srv);
+
+  for my $service (@{$servicecache->{$srv}}) {
+    $servicenames->{$service->{'service'}}++;
+    $maxnodenamelen = length($service->{'node'}) if(length($service->{'node'}) > $maxnodenamelen);
+  }
+}
+
+my @servicenames = map { uc(substr($_, 0, 4)); } sort keys %$servicenames;
+
+print " "x($maxnodenamelen+1), join(' ', map { sprintf("%-${COLWIDTH}s", $_); } @servicenames), "\n";
+
+if(scalar @$arStatus) {
+  for my $srv (@$arStatus) {
+    my $lastnode = "";
+    my $states   = {};
+
+    while (my $service = shift @{$servicecache->{$srv}}) {
+
+      my $key = sprintf("%s/%s",
+			$service->{'node'},
+			uc(substr($service->{'service'}, 0, 4)));
+
+      $SIG{ALRM} = sub { die "timeout"; };
+      alarm(5);
+      eval {
+        $states->{$key} = $service->status({'output' => 'no'});
+      };
+      alarm(0);
+
+      if ($@) {
+        $states->{$key} = 'TOUT' if ($@ =~ /timeout/);
+      }
+#      print STDERR qq(srv=$srv, service=$service, lastnode=$lastnode, s -> node=$service->{'node'}, scalar scache=@{[scalar @{$servicecache->{$srv}}]}\n);
+
+      if($lastnode && ($service->{'node'} ne $lastnode)) {
+	printf "%-${maxnodenamelen}s ", $lastnode;
+	for my $servicename (@servicenames) {
+	  my $state = $states->{"$lastnode/$servicename"}||"-";
+	  printf("%-${COLWIDTH}s ", $state);
+	}
+	print "\n";
+      }
+      $lastnode = $service->{'node'};
+    }
+	  printf "%-${maxnodenamelen}s ", $lastnode;
+    for my $servicename (@servicenames) {
+      my $state = $states->{"$lastnode/$servicename"}||"-";
+      printf("%-${COLWIDTH}s ", $state);
+    }
+    print "\n";
+  }
+}
+print "\n";
+1;

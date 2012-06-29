@@ -1,0 +1,48 @@
+#########
+# Author: rmp
+# Last Modified: 2006-05-04 rmp - modified to work with XML::Atom::Feed directly, then reverted back to Buzz RSS+Atom bridging
+#
+package Website::portlet::news;
+use strict;
+use warnings;
+use base qw(Website::portlet);
+use Website::Portlets::Buzz::Feed;
+
+sub fields { qw(name feed limit); }
+
+sub run {
+  my $self  = shift;
+  my $atom  = $self->{'feed'};
+  my $limit = $self->{'limit'} || 5;
+
+  return unless($atom);
+  my @a;
+
+  if(ref($atom)) {
+    push @a, @{$atom};
+  } else {
+    push @a, $atom;
+  }
+
+  my $content = 'foo';
+  if(@a) {
+    my $host = $ENV{'HTTP_X_FORWARDED_HOST'}||'';
+    for my $url (map { (substr($_, 0, 1) eq "/")?"http://$host/$_":$_; } @a) {
+      warn $url;
+      my $feed    = Website::Portlets::Buzz::Feed->new({
+							'feed' => $url,
+						       });
+      my @stories = ();
+      next;
+      eval {
+	@stories = $feed->stories($limit);
+      };
+      warn $@ if($@);
+      next unless (scalar @stories);
+      $content .= qq(<div class="portlet"><div class="portlethead">$self->{'name'}</div><div class="portletitem"><ul>@{[map {qq(<li><a href="$_->{'link'}">$_->{'title'}</a></li>\n) } @stories]}</ul></div></div>);
+    }
+  }
+  return $content;
+}
+
+1;

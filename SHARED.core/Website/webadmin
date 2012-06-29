@@ -1,0 +1,160 @@
+#!/usr/local/bin/perl -w
+#########
+# Author:        rmp
+# Maintainer:    $Author: jc3 $
+# Created:       2006-06-28
+# Last Modified: $Date: 2008/08/28 13:30:37 $
+#
+# Web server control script
+#
+package webadmin;
+use strict;
+use Getopt::Long;
+use lib qw(/apache/lib/);
+use lib qw(/chroot/web/WWW/SHARED_docs/lib/core);
+use lib qw(/WWW/SHARED_docs/lib/core);
+use Website::ServiceManager;
+
+our $VERSION = do { my @r = (q$Revision: 1.19 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
+our $DEBUG   = 0;
+our $MAILTO  = [qw(team105-web@sanger.ac.uk)];
+$|           = 1;
+
+my $opts = {};
+&GetOptions($opts,
+	    's=s@',   # Start
+	    'k=s@',   # Kill
+	    'r=s@',   # Soft Restart (SIGUSR1 / SIGHUP)
+	    'hr=s@',  # Hard Restart (stop, start)
+	    'h',      # Help
+	    'l:s',    # Service list
+	    '1:s',    # Service list unformatted
+	    'q=s@',   # Query status
+	    'v',      # Verbose
+	   );
+
+if($opts->{'h'} || scalar keys %$opts == 0) {
+  print qq($0 v$VERSION rmp\@sanger.ac.uk\n
+-s  <server|service> # start servers
+-k  <server|service> # kill servers
+-r  <server|service> # restart (usually SIGUSR1/HUP) servers
+-hr <server|service> # stop+start servers
+-q  <server|service> # query status of server
+-h                   # this help
+-l  [<x>]            # list services (optionally matching server or service x)
+-1  [<x>]            # list services unformatted
+-v                   # verbose debugging
+);
+  exit 0;
+}
+
+if($opts->{'v'}) {
+  $Website::ServiceManager::DEBUG = $Website::Service::DEBUG = $DEBUG = 1;
+}
+
+if ($> != 0){#check to see if this is running as root 
+  die ("You must be logged in as root or using sudo to run this application\n");
+}
+
+my $arStart   = [];
+my $arStop    = [];
+my $arRestart = [];
+my $arStatus  = [];
+push @$arStart,   @{$opts->{'s'}}  if($opts->{'s'});
+push @$arStart,   @{$opts->{'hr'}} if($opts->{'hr'});
+push @$arStop,    @{$opts->{'k'}}  if($opts->{'k'});
+push @$arStop,    @{$opts->{'hr'}} if($opts->{'hr'});
+push @$arRestart, @{$opts->{'r'}}  if($opts->{'r'});
+push @$arStatus,  @{$opts->{'q'}}  if($opts->{'q'});
+
+my $servicemanager = Website::ServiceManager->new();
+
+if(defined $opts->{'l'} || defined $opts->{'1'}) {
+  my $seen       = {};
+  my $match      = $opts->{'l'} || $opts->{'1'} || '';
+  my @services   = sort {
+                         my ($a1, $a2) = split(/:/, $a);
+                         my ($b1, $b2) = split(/:/, $b);
+                         $a2 ||= '';
+                         $b2 ||= '';
+                         return $a1 cmp $b1 || $a2 cmp $b2
+                        }
+                   grep { !$seen->{$_}++ }
+                   grep { /$match/ }
+		   map  { sprintf('%s%s%s',
+				  $_->{'node'}||'',
+				  (defined $_->{'service'})?':':'',
+				  $_->{'service'}||'') }
+		   map  { @{$_} }
+		   @{$servicemanager->services()};
+
+  if(!scalar @services) {
+    push @services, qq(No services matching $opts->{'l'});
+  }
+
+  if(defined $opts->{'1'}) {
+    $, = "\n";
+    print @services;
+
+  } else {
+    my $cols = 4;
+    my $m    = int(scalar @services / $cols)+1;
+    my $w    = int(80/$cols);
+    for (my $i=0;$i<$m;$i++) {
+      printf("%-${w}s %-${w}s %-${w}s %-${w}s\n",
+	     $services[$i]      ||'',
+	     $services[$m+$i]   ||'',
+	     $services[2*$m+$i] ||'',
+	     $services[3*$m+$i] ||'');
+    }
+  }
+
+  exit 0;
+}
+
+my $servicecache = {};
+for my $srv (@$arStatus, @$arStop, @$arStart, @$arRestart) {
+  $servicecache->{$srv} ||= $servicemanager->service($srv);
+}
+
+if(scalar @$arStatus) {
+  for my $srv (@$arStatus) {
+    for my $service (@{$servicecache->{$srv}}) {
+      $service->status();
+    }
+  }
+  exit 0;
+}
+
+if(@$arStart||@$arStop||@$arRestart) {
+  eval 'require Website::Utilities::Mail';
+  if($@) {
+    warn qq(Website::Utilities::Mail unavailable. Not sending mail);
+  } else {
+    my $mail = Website::Utilities::Mail->new({
+					      'to'      => $MAILTO,
+					      'subject' => sprintf('Servers %s%s%s',
+								   (scalar @$arStop   )?'stopped ':'',
+								   (scalar @$arStart  )?'started ':'',
+								   (scalar @$arRestart)?'restarted ':''),
+					      'message' => qq(Stopped:   @$arStop\nStarted:   @$arStart\nRestarted: @$arRestart\nUser:      @{[''.getpwuid($<)]}\n),
+					   });
+  }
+}
+
+for my $serviceset (keys %$servicecache) {
+  for my $service (@{$servicecache->{$serviceset}}) {
+    if(grep { $_ eq $serviceset } @$arStop) {
+      $service->stop();
+      sleep(3); #delay to make the restart process a bit smother 
+    }
+    if(grep { $_ eq $serviceset } @$arStart) {
+      $service->start();
+    }
+    if(grep { $_ eq $serviceset } @$arRestart) {
+      $service->restart();
+    }
+  }
+}
+
+1;

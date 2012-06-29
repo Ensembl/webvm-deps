@@ -1,0 +1,205 @@
+#########
+# Author:        rmp
+# Maintainer:    rmp
+# Last Modified: 10-Nov-2008
+#
+# decoration for (www|dev).eucomm.org
+#
+package SiteDecor::eucomm;
+use strict;
+use Sys::Hostname;
+use base qw(SiteDecor);
+
+our $VERSION = 0.1;
+
+sub init_defaults {
+    my $self = shift;
+    my $def  = {
+        "stylesheet"     => [ "http://$ENV{'HTTP_X_FORWARDED_HOST'}/css/eucomm.css", "http://$ENV{'HTTP_X_FORWARDED_HOST'}/css/eucomm-print.css" ],
+        "redirect_delay" => 5,
+        "bannercase"     => 'ucfirst',
+        "author"         => 'webmaster',
+        "decor"          => 'full',
+    };
+    $self->merge($def);
+}
+
+sub html_headers {
+    my $self   = shift;
+    my $title  = $self->title() || "European Conditional Mouse Mutagenesis Program";
+
+    my $jsfile = $self->jsfile() || undef;
+    
+    my ($hostname)   = (hostname()) =~ /^([^\.]+)/mx;
+
+    my $html_headers = qq[
+        <!-- version: $VERSION -->
+        <!-- host: $hostname -->
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <title>$title &bull; EUCOMM</title>
+                <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+                <meta name="author" content="Wellcome Trust Sanger Institute" />
+                <meta name="description" content="The EUCOMM integrated project is funded by the European Union Framework 6 programme. The goal of EUCOMM is to generate collection of up to 20,000 mutated genes in mouse embryonic stem (ES) cells using conditional gene trapping and gene targeting approaches." />
+                <meta name="keywords" content="EUCOMM,mouse mutants,gene trap,ES cells,EURExpress,EMAGE,PRIME,FunGenEs,EUMORPHIA,EMMA" />
+
+                <link rel="icon" href="http://www.eucomm.org/favicon.ico" type="image/x-icon" />
+                <link rel="shortcut icon" href="http://www.eucomm.org/favicon.ico" type="image/x-icon" />
+    ];
+    
+    $html_headers .= q[
+                <style type="text/css" media="screen, projector">
+                    /*<![CDATA[*/
+                        @import "/css/yui-reset-fonts-grid-base.css";
+                        @import "/css/eucomm.css";
+                        @import "/css/jquery.treeview.css";
+                    /*]]>*/
+                </style>
+                <style type="text/css" media="print">
+                    /*<![CDATA[*/
+                        @import "/css/yui-reset-fonts-base.css";
+                        @import "/css/eucomm-print.css";
+                    /*]]>*/
+                </style>
+
+                <!-- Prototype -->
+                <script src="/htgt/static/javascript/prototype.js" type="text/javascript" charset="utf-8"></script>
+                <script src="/htgt/static/javascript/scriptaculous.js?load=effects" type="text/javascript" charset="utf-8"></script>
+                <script src="/htgt/static/javascript/tablekit.js" type="text/javascript" charset="utf-8"></script>
+                <script src="/htgt/static/javascript/validation.js" type="text/javascript" charset="utf-8"></script>
+                <script src="/htgt/static/javascript/htgt.js" type="text/javascript" charset="utf-8"></script>
+
+                <!-- jQuery -->
+                <script src="/javascript/jquery-1.2.6.min.js" type="text/javascript" charset="utf-8"></script>
+                <script type="text/javascript" charset="utf-8">
+                    //<![CDATA[
+                        jQuery.noConflict();
+                    //]]>
+                </script>
+                <script src="/javascript/jquery.treeview.min.js" type="text/javascript" charset="utf-8"></script>
+
+                <!-- Custom -->
+                <script src="/javascript/eucomm.js" type="text/javascript" charset="utf-8"></script>
+                
+    ];
+    
+    if (@$jsfile) {
+        $html_headers .= join( "\n", map { qq[<script type="text/javascript" charset="utf-8" src="$_" ></script>\n] } @$jsfile );
+    }
+    
+    $html_headers .= qq[
+                </head>
+                <body>
+                    <div id="doc3" class="yui-t2">
+                        <div id="nav-search" class="yui-g">
+                            <div class="yui-u first">
+                                <ul id="header-navigation">
+                                    <li class="first"><a href="/">Home</a></li>
+                                    <li class="no-border"><a href="/contact/">Contact</a></li>
+                                </ul>
+                            </div>
+                            <div class="yui-u">
+                                <fieldset>
+                                    <form id="gene_search" method="get" action="/htgt/report/gene_search">
+                                        <p>
+                                            <img id="gene_search_spinner" src="/htgt/static/images/indicator.gif" alt="Working..." style="display:none;" />
+                                            <input class="default-value" type="text" id="gene_name" name="query" title="Search for a gene or product" />
+                                            <span title="reset" id="gene_search_reset" class="reset">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        </p>
+                                    </form>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div id="hd">
+                            <h1><a href='/'><img src="/images/header.png" alt="European Conditional Mouse Mutagenesis Program" /></a></h1>
+                        </div>
+                        <div id="bd">
+                            <div class="yui-b first">
+                                <ul id="side-navigation">
+                                    <li><a href="/">Home &amp; Search</a></li>
+                                    <li><a href="/information/">Project Information</a>
+                                        <ul>
+                                            <li><a href="/information/news-and-events/">News &amp; Events</a></li>
+                                            <li><a href="/information/media-releases/">Media Releases</a></li>
+                                            <li><a href="/information/jobs/">Jobs</a></li>
+                                            <li><a href="/links/">Links</a></li>
+                                        </ul>
+                                    </li>
+                                    <li>Experimental Information
+                                        <ul>
+                                            <li><a href="/information/trapping/">Trapping</a></li>
+                                            <li><a href="/information/targeting/">Targeting</a>
+                                                <ul>
+                                                    <li><a href="/htgt/cassettes">Cassettes</a></li>
+                                                    <li><a href="/htgt/backbones">Backbones</a></li>
+                                                </ul>
+                                            </li>
+                                            <li><a href="/information/protocols/">Protocols</a></li>
+                                            <li><a href="/information/publications/">Publications</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="/information/participants-and-sab/">Participants &amp; SAB</a></li>
+                                    <li><a href="/contact/">Contact &amp; Ordering</a></li>
+                                </ul>
+                            </div>
+                            <div id="yui-main">
+                                <div id="content" class="yui-b">
+                                    <div id="site_wide_search_results"></div>
+                                    <div id="naked_content">
+    ];
+
+    return $html_headers;
+}
+
+sub site_footers {
+    my $self    = shift;
+    my $lastmod = "";
+    my $req_uri = $ENV{'REQUEST_URI'} || "";
+
+    if ( $ENV{'LAST_MODIFIED'} ) {
+        $lastmod = qq(Last Modified $ENV{'LAST_MODIFIED'});
+    }
+    else {
+        #########
+        # Look for the request_uri document
+        #
+        my ($fn) = "$ENV{'DOCUMENT_ROOT'}/$req_uri" =~ m|([a-z\d\./_]+)|i;
+
+        #########
+        # If that doesn't exist try the script_filename
+        #
+        if ( $fn && !-e $fn ) {
+            ($fn) = $ENV{'SCRIPT_FILENAME'} || "" =~ m|([a-z\d\./_]+)|i;
+        }
+
+        if ( $fn && -e $fn ) {
+            my ($mtime) = ( stat($fn) )[9];
+            my $scriptstamp = localtime($mtime);
+            $lastmod = qq(Last Modified $scriptstamp) if ( defined $scriptstamp );
+        }
+    }
+
+    my $footer = qq[
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ft">
+                        <span id="last-modified">$lastmod</span>
+                        <ul id="footer-navigation">
+                            <li class="first"><a href="/">Home</a></li>
+                            <li class="no-border"><a href="/contact/">Contact</a></li>
+                        </ul>
+                        <span id="copyright">&copy; 2008, EUCOMM Project</span>
+                    </div>
+                </div>
+            </body>
+        </html>
+    ];
+    
+    return $footer;
+
+}
+
+1;

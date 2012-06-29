@@ -1,0 +1,170 @@
+#########
+# Author:        rmp
+# Maintainer:    rmp
+# Last Modified: 2005-08-17
+#
+# decoration for (www|dev).wtccc.org and ccc.sanger.ac.uk
+#
+package SiteDecor::ccc;
+use strict;
+use warnings;
+use SangerPaths qw(ccc);
+use base qw(SiteDecor);
+use Sys::Hostname;
+use ccc::AppKit::allowed_url;  # in testing: a bit faster
+
+our $VERSION = 0.2;
+
+sub init_defaults {
+  my $self = shift;
+  my $def  = {
+	      stylesheet     => ['/css/wtccc.css'],
+	      redirect_delay => 5,
+        jsfile         => ['/js/menus.js'],
+	      bannercase     => 'ucfirst',
+	      author         => 'webmaster',
+	      decor          => 'full',
+	     };
+  $self->merge($def);
+}
+
+sub html_headers {
+  my $self   = shift;
+  my $banner = $self->{'banner'} || "";
+  my $title  = $self->{'title'}  || $banner || "WTCCC: The Wellcome Trust Case Control Consortium";
+
+  my ($hostname)   = (hostname()) =~ /^([^\.]+)/mx;
+  my $html_headers = qq(
+<html>
+  <head>
+    <title>$title</title>
+    @{[map {qq( <link rel="stylesheet" type="text/css" href="$_" />\n); } @{$self->stylesheet()}]}
+    @{[map {qq( <script type="text/javascript" src="$_" ></script>\n);  } @{$self->jsfile()}]}
+  </head><body onload="setformfocus()"><!-- host: $hostname-->)
+. $self->banner
+. qq(<div id="main_content">\n);
+  return $html_headers;
+}
+
+sub site_footers {
+  my $self = shift;
+  return qq(
+    </div><!-- end main_content -->
+  </body>
+</html>\n);
+}
+
+sub banner {
+    my $self = shift;
+
+return qq(<div class="pagehead">\n
+<div class="banner"><span class="wt">Wellcome Trust</span> Case Control Consortium</div>\n
+<div class="mbar">
+@{[join '', @{$self->_menu_items()}]}
+<div class="spacer">&nbsp;</div></div><!-- end mbar -->\n
+</div><!-- end pagehead -->\n);
+#    $html .= '<div id="wrapper">'.ccc::leftbar->new($self);
+}
+
+sub _menu_items # requires username
+  {
+  my $self = shift;
+  my $cfg;
+
+  my $cfile = $self->{'menu'} || $ENV{'DOCUMENT_ROOT'}. '/menu.ini';
+  if (-f $cfile) {
+      $cfg = new Config::IniFiles(-file => $cfile);
+  }
+  else {
+    warn qq^mw6:Can\'t find inifile $cfile^;
+    return;
+  }
+  push my @menu, @{ $self->parse_config($cfg) };
+  return \@menu;
+  }
+
+sub parse_config # uses allowed_url
+  {
+  my $self = shift;
+  my $cfg = shift;
+  my @menu;
+  my $user = $self->{'username'};
+  my $url_cache; if ($user) { $url_cache = ccc::AppKit::Allowed_Url->new($user)};
+
+  push @menu, qq(<div class="menu">\n<div><a accesskey="h" href="/">Home</a></div>\n</div>\n);
+
+  my $i = 0;
+  foreach my $section ($cfg->Sections) {
+    $i++;
+    my $menu = qq(<div class="menu" id="menu$i" onmouseover="show($i)" onmouseout="hide($i)">);
+
+    if ($user && $section eq 'Registered access') {
+      $menu .= qq(<div title="$user logged in">$section</div><div class="popup" id="popup$i" onmouseover="show($i)" onmouseout="hide($i)">\n);
+      } else {
+      $menu .= qq(<div>$section</div><div class="popup" id="popup$i" onmouseover="show($i)" onmouseout="hide($i)">\n);
+      }
+
+    if ($section eq 'Registered access') {
+      eval {
+
+        if ($user) {
+          foreach my $parameter ($cfg->Parameters($section)) {
+            my $link = $cfg->val($section, $parameter);
+            if ($url_cache->allowed_url($link)) { # from ccc::AppKit::restrictions
+              $menu .= qq(<a href="$link">$parameter</a>\n)
+              }
+            }
+          $menu .= qq(<a title="logout $user" href="/logout">Logout</a>\n);
+        } else {
+          $menu .= qq(<a accesskey="l" href="/login.shtml">Login</a>\n);
+        }
+
+      } or carp ('eval failed');
+
+      if ($@) {
+        $menu .= qq(<a href="/error.shtml">Error</a>\n);
+      }
+
+    } else { # if ($section ne 'Registered access')
+
+      foreach my $parameter ($cfg->Parameters($section)) {
+        my $link = $cfg->val($section, $parameter);
+        $menu .= qq(<a href="$link">$parameter</a>\n);
+      }
+    } # endif ($section eq 'Registered access')
+
+    $menu .= qq(</div></div>\n);
+    push @menu, $menu;
+  }
+#  warn ('mw6: this line should run in mjwWeb.pm');
+  return \@menu;
+}
+
+sub stylesheet {
+  my $self = shift;
+  if (@_) {
+    $self->{'stylesheet'} = [];
+    foreach (@_)
+      {
+      if ('ARRAY' eq ref $_)
+	{
+        foreach (@{$_})
+          {
+          push @{$self->{'stylesheet'}}, $_
+          }
+	}
+      else
+        {
+        push @{$self->{'stylesheet'}}, $_
+        }
+      }
+  };
+  return $self->{'stylesheet'};
+}
+
+sub doc_type {
+  return qq(<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">\n);
+}
+
+1;

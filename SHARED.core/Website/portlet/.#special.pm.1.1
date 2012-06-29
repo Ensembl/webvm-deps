@@ -1,0 +1,103 @@
+#########
+# Author: rmp
+#
+# Configurable portlet container
+#
+package Website::portlet::special;
+use strict;
+use warnings;
+use base qw(Website::portlet);
+use Website::portlet::getblast;
+
+our $PORTLETS    = {
+		    'logins'             => qq(Who\'s logged in?),
+#		    'calendar'           => qq(Events this month),
+		    'getblast'           => qq(BLAST results),
+#		    'news'               => qq(RSS News Feeds),
+		    'miniad'             => qq(WTSI Adverts),
+		    'ssosignon'          => qq(Single Sign On),
+#		    'pdfconvertor'       => qq(PDF Convertor),
+		    'linkclipboard_ajax' => qq(Link Clipboard),
+		   };
+our $PORTLET_IDS = [sort keys %$PORTLETS];
+our $CONFIG_KEY  = 'portlet';
+
+sub fields {
+  my $self = shift;
+  return ($self->SUPER::fields(), 'skip');
+}
+
+sub run {
+  my $self    = shift;
+  my $content = '';
+
+  #########
+  # only allow configuration for logged-in users
+  #
+  return $content unless($self->{'username'});
+
+  #########
+  # load configured portlets from session database & detaint
+  #
+  my $configured_portlets = $self->{'userconfig'}->get($CONFIG_KEY);
+
+  #########
+  # run configured portlets
+  #
+  for my $portletname (@{$PORTLET_IDS}) {
+    #########
+    # skip unless it's an approved portlet
+    #
+    my $portletpkg = "Website::portlet::$portletname";
+    eval "require $portletpkg";
+    if($@) {
+      warn $@;
+      next;
+    }
+
+    next unless(grep { $_ eq $portletname } @{$configured_portlets});
+
+    next if(grep { $_ eq $portletname } @{$self->{'skip'}}); # skip determines if SiteDecor has already drawn this one (e.g. configured in header.ini)
+
+    eval {
+      my $new  = $portletpkg->new($self);
+      my $pstr = $new->run() || '';
+      $content .= qq(<!--begin configured $portletname for $self->{'username'} -->
+$pstr
+<!-- end configured $portletname -->\n);
+    };
+    if($@) {
+      warn $@;
+      next;
+    }
+  }
+
+  #########
+  # List available portlets
+  #
+  my $dev   = $ENV{'dev'}||'';
+  $content .= qq(<div class="portlet" id="portlet_special">
+  <div class="portlethead">Portlet Configuration</div>
+  <div class="portletitem">
+    <form method="post" action="http://www$dev.sanger.ac.uk/cgi-bin/utils/siteconfig">
+      <ul>@{[
+        map {
+          my $p    = $_;
+          my $auth = 0;
+          eval {
+            my $pkg  = "Website::portlet::$p";
+            $auth = $pkg->new($self)->is_authorised();
+          };
+          $auth?qq(\t<li><input name="portlet" value="$p" type="checkbox" @{[
+            (grep { $p eq $_ } @{$configured_portlets})?'checked="checked"':''
+          ]} /> <a href="http://www$ENV{'dev'}.sanger.ac.uk/cgi-bin/utils/siteconfig?portlet=$p">$PORTLETS->{$p}</a></li>\n):'';
+        } sort { $PORTLETS->{$a} cmp $PORTLETS->{$b} } @{$PORTLET_IDS}
+      ]}</ul>
+      <input type="submit" value="configure" />
+    </form>
+  </div>
+</div>\n);
+  return $content;
+}
+1;
+
