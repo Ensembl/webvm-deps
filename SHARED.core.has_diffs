@@ -1,0 +1,22 @@
+? NB.diffs.log
+? Sanger/JS5.pm
+? Sanger/Graphics/GraphViz.pm
+? SiteDecor/merop-edit.pm
+? Website/._DBStore.pm
+? Website/DBStore.pm-testing
+? Website/Service
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor.pm,v
+retrieving revision 6.51
+retrieving revision 6.52
+Merging differences between 6.51 and 6.52 into SiteDecor.pm
+M SiteDecor.pm
+M SiteDecor/ccc.pm
+M SiteDecor/decipher.pm
+M SiteDecor/genedb.pm
+cvs update: conflict: `SiteDecor/meropstest.pm' is modified but no longer in the repository
+C SiteDecor/meropstest.pm
+M Website/Feedback.pm
+M Website/ServiceManager.pm
+M Website/webstatus
+M Website/SSO/Util.pm
+M Website/portlet/calendar.pm
