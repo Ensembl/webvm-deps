@@ -1,8 +1,8 @@
 #########
 # Author:        rmp
 # Maintainer:    mw6
-# Last Modified: $Date: 2010-09-29 08:49:17 $ $Author: mw6 $
-# Id:            $Id: ccc.pm,v 6.32 2010-09-29 08:49:17 mw6 Exp $
+# Last Modified: $Date: 2012-11-23 11:45:55 $ $Author: mw6 $
+# Id:            $Id: ccc.pm,v 6.34 2012-11-23 11:45:55 mw6 Exp $
 # Source:        $Source: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/ccc.pm,v $
 # $HeadURL$
 #
@@ -11,12 +11,12 @@
 package SiteDecor::ccc;
 use strict;
 use warnings;
-use SangerPaths qw(ccc);
+# use SangerPaths qw(ccc);
 use base qw(SiteDecor);
 use Sys::Hostname;
-use ccc::AppKit::allowed_url;  # in testing: a bit faster
+# use ccc::AppKit::allowed_url;  # in testing: a bit faster
 
-our $VERSION = do { my @r = (q$Revision: 6.32 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
+our $VERSION = do { my @r = (q$Revision: 6.34 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
 our $JSFILES = {
                 '/js/urchin.js'   => q(),
                };
@@ -148,8 +148,9 @@ return $old_link;
 
 sub _menu_items { # requires username
 my $self = shift;
-my $user = $self->username();
-my $url_cache; if ($user) { $url_cache = ccc::AppKit::Allowed_Url->new($user) };
+# my $user = $self->username();
+my $url_cache;
+# if ($user) { $url_cache = ccc::AppKit::Allowed_Url->new($user) };
 my $navlist = $self->{'navlist'}; # was $self->{'handler'}{'navlist'}
 #print "!",Dumper(\$navlist),"!<BR>",Dumper(\$self);
 
@@ -165,13 +166,13 @@ foreach ( qw(navigator navigator2 navigator3) ) {
         if (0 == (index $text,'__'))
           {
           $text = substr $text,2;
-          $display = 1 if (not $user);
+          $display = 1;# if (not $user);
           }
         # Only print when logged in.
         elsif (0 == (index $text,'_'))
           {
-          $text = substr $text,1;
-          $display = 1 if ($user && $url_cache->allowed_url($link));
+#          $text = substr($text,1);
+#          $display = 1 if ($user && $url_cache->allowed_url($link));
           }
         # Normal cases
         else
@@ -186,7 +187,8 @@ foreach ( qw(navigator navigator2 navigator3) ) {
       }
     else {
       $subject = $_; # used later when we get a hash
-      my $legend = ($user && 'Registered access' eq $subject) ? qq( title="$user logged in") : q();
+#      my $legend = ($user && 'Registered access' eq $subject) ? qq( title="$user logged in") : q();
+      my $legend = q();
       $menu{$_} = "  <div$legend>$_</div>\n";
       $popup{$_} = q();
       push @subjects,$_;

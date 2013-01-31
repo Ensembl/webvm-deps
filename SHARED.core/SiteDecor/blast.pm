@@ -40,8 +40,8 @@ sub site_headers {
   my $self = shift;
   my $header = q(
     <div id="header"><div id="logo">
-		  <a href="/"><img src="http://www.sanger.ac.uk/i/sanger-logo.png" alt="Wellcome Trust Sanger Institute"></a>
-	  </div></div>
+      <a href="/"><img src="http://www.sanger.ac.uk/s-inst/gfx/sanger-logo.png" alt="Wellcome Trust Sanger Institute"></a>
+    </div></div>
   );
   $header .= $self->tabs1;
   $header .= $self->tabs2;
@@ -70,27 +70,32 @@ sub site_footers {
   my $footer = $self->wrap_bottom;
   $footer .= q(
     <div id="footer">
-	    <ul id="footer_links">
-		    <li>
-			    <a href="http://www.sanger.ac.uk/help/">Help</a>
-		    </li>
-		    <li>|
-		    </li>
-		    <li>
-			    <a href="http://www.sanger.ac.uk/about/contact/">Contact us</a>
-		    </li>
-		    <li>|
-		    </li>
-		    <li>
-			    <a href="http://www.sanger.ac.uk/legal/">Legal</a>
-		    </li>
-		    <li>|
-		    </li>
-		    <li>
-			    <a href="http://www.sanger.ac.uk/datasharing/">Data sharing</a>
-		    </li>
-	    </ul><br>
-	    Wellcome Trust Sanger Institute, Genome Research Limited (reg no. 2742969) is a charity registered in England with number 1021457<br>
+      <ul id="footer_links">
+        <li>
+          <a href="http://www.sanger.ac.uk/help/">Help</a>
+        </li>
+        <li>|
+        </li>
+        <li>
+          <a href="http://www.sanger.ac.uk/about/contact/">Contact us</a>
+        </li>
+        <li>|
+        </li>
+        <li>
+          <a href="http://www.sanger.ac.uk/legal/">Legal</a>
+        </li>
+        <li>|
+        </li>
+        <li>
+          <a href="http://www.sanger.ac.uk/datasharing/">Data sharing</a>
+        </li>
+        <li>|
+        </li>
+        <li>
+          <a href="http://www.sanger.ac.uk/legal/cookiespolicy.html">Cookie Policy</a>
+        </li>
+      </ul><br>
+      Wellcome Trust Sanger Institute, Genome Research Limited (reg no. 2742969) is a charity registered in England with number 1021457<br>
     </div>
   );
   return $footer;
@@ -117,7 +122,7 @@ sub tabs1 {
   my $self = shift;
   my $tabs = q{
 <div id="navTabs">
-	<ul id="navLeft" style="margin:0;padding:0">
+  <ul id="navLeft" style="margin:0;padding:0">
   };
   foreach my $ent (@{$self->tabs1_cats}){
     my $t = $ent->[1];
@@ -154,7 +159,7 @@ sub tabs2 {
   my $self = shift;
   my $tabs = q{
 <div id="NavTabs2">
-	<ul id="Tabs2">
+  <ul id="Tabs2">
   };
   foreach my $ent (@{$self->tabs2_cats}){
     my $t = $ent->[1];

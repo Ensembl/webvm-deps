@@ -2,51 +2,51 @@
 # Author:        rmp
 # Maintainer:    $Author: nb5 $
 # Created:       2006-06-28
-# Last Modified: $Date: 2009-04-01 14:22:55 $
+# Last Modified: $Date: 2012-09-11 08:27:17 $
 #
 package Website::ServiceManager;
 use strict;
 use warnings;
 use Website::Service;
 
-our $VERSION = do { my @r = (q$Revision: 1.77 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
+our $VERSION = do { my @r = (q$Revision: 1.79 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
 our $DEBUG   = 0;
 our $SERVERS = {
-  'frontend' => {
-    '_services' => [qw(proxy)],
-    '_lsf'      => 'off',
-    'intweb2'   => {
-      '_shell'    => 'bash',
-      '_nodes'    => [qw(intweb2a intweb2b)],
-    },
-    'wwwsrv'   => {
-      '_shell' => 'csh',
-      'webfe'  => [qw(webfe-red1 webfe-red2 webfe-yellow1 webfe-yellow2)],
-    },
-  },
+#  'frontend' => {
+#    '_services' => [qw(proxy)],
+#    '_lsf'      => 'off',
+#    'intweb2'   => {
+#      '_shell'    => 'bash',
+#      '_nodes'    => [qw(intweb2a intweb2b)],
+#    },
+#    'wwwsrv'   => {
+#      '_shell' => 'csh',
+#      'webfe'  => [qw(webfe-red1 webfe-red2 webfe-yellow1 webfe-yellow2)],
+#    },
+#  },
   'backend'  => {
     '_lsf'      => 'off',
     '_shell'    => 'bash',
     'live'      => {
       '_services'     => [qw(heavy lite webpublishd)],
-      '_nodes'        => [qw(web-grn-01 web-yel-01 web-wwwold-01 web-wwwold-02 web-wwwold-03 web-wwwold-04)],
+      '_nodes'        => [qw(web-wwwold-01 web-wwwold-02 web-wwwold-03 web-wwwold-04)],
       'web-vm-grn-01' => {
         '_services' => [qw(heavy lite webpublishd)],
       },
     },
-    'dev'      => {                   
+    'dev'      => {
       '_services' => [qw(heavy lite admin)],
       '_nodes'    => [qw(webdev2 webdev3)],
     },
   },
-  'wtccc'    =>  {  
-    '_services' => [qw(wtccc_live wtccc_dev)],
-    '_lsf'      => 'off',
-    '_shell'    => 'bash',
-    'genoweb1'  => {
-      '_nodes' => [qw(genoweb1a genoweb1b)],
-    },
-  },         
+#  'wtccc'    =>  {
+#    '_services' => [qw(wtccc_live wtccc_dev)],
+#    '_lsf'      => 'off',
+#    '_shell'    => 'bash',
+#    'genoweb1'  => {
+#      '_nodes' => [qw(genoweb1a genoweb1b)],
+#    },
+#  },
 };
 
 our $SERVICES = {

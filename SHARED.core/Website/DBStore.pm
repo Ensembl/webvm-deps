@@ -2,8 +2,8 @@
 # Author:        rmp
 # Maintainer:    $Author: mw6 $
 # Created:       2006-09-13
-# Last Modified: $Date: 2010-07-12 09:00:16 $
-# Id:            $Id: DBStore.pm,v 1.24 2010-07-12 09:00:16 mw6 Exp $
+# Last Modified: $Date: 2012-07-04 08:46:40 $
+# Id:            $Id: DBStore.pm,v 1.25 2012-07-04 08:46:40 mw6 Exp $
 # Source:        $Source: /repos/cvs/webcore/SHARED_docs/lib/core/Website/DBStore.pm,v $
 # $HeadURL$
 #
@@ -17,11 +17,11 @@ use DBI;
 use English qw(-no_match_vars);
 use Carp;
 
-our $VERSION = do { my @r = (q$Revision: 1.24 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
+our $VERSION = do { my @r = (q$Revision: 1.25 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
 our $DEBUG   = 0;
 
-sub dbhost { return 'web-vm-db-core02'; }
-sub dbport { return 3315;       }
+sub dbhost { return 'web-wwwdb-02'; }
+sub dbport { return 3358;       }
 sub dbuser { return 'dbstore';  }
 sub dbpass { return 'dbstore';  }
 sub dbname { return 'dbstore';  }
@@ -279,7 +279,7 @@ Website::DBStore - An API to a database-backed shared storage area avoiding clus
 
 =head1 VERSION
 
-$Revision: 1.24 $
+$Revision: 1.25 $
 
 =head1 DESCRIPTION
 

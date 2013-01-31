@@ -1,0 +1,1135 @@
+? Sanger/JS5.pm
+? Sanger/Graphics/GraphViz.pm
+? SiteDecor/merop-edit.pm
+? Website/._DBStore.pm
+? Website/DBStore.pm-testing
+? Website/Service
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor.pm,v
+retrieving revision 6.51
+retrieving revision 6.52
+Merging differences between 6.51 and 6.52 into SiteDecor.pm
+M SiteDecor.pm
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/blast.pm,v
+retrieving revision 1.5
+retrieving revision 1.6
+Merging differences between 1.5 and 1.6 into blast.pm
+M SiteDecor/blast.pm
+M SiteDecor/ccc.pm
+M SiteDecor/decipher.pm
+M SiteDecor/genedb.pm
+cvs update: conflict: `SiteDecor/meropstest.pm' is modified but no longer in the repository
+C SiteDecor/meropstest.pm
+M Website/Feedback.pm
+M Website/ServiceManager.pm
+M Website/webstatus
+M Website/portlet/calendar.pm
+? Sanger/JS5.pm
+? Sanger/Graphics/GraphViz.pm
+? SiteDecor/merop-edit.pm
+? Website/._DBStore.pm
+? Website/DBStore.pm-testing
+? Website/Service
+Index: SiteDecor.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor.pm,v
+retrieving revision 6.51
+diff -u -r6.51 SiteDecor.pm
+--- SiteDecor.pm	28 Mar 2012 10:44:53 -0000	6.51
++++ SiteDecor.pm	31 Jan 2013 11:17:11 -0000
+@@ -14,21 +14,15 @@
+ use warnings;
+ use Data::Dumper;
+ use Config::IniFiles;
+-use SiteDecor::acedb;
+ use SiteDecor::blast;
+-use SiteDecor::bloodomics;
+ use SiteDecor::ccc;
+ use SiteDecor::das;
+-use SiteDecor::eucomm;
+-use SiteDecor::g2c;
+ use SiteDecor::genedb;
+ use SiteDecor::intweb;
+ use SiteDecor::intwebtest;
+ use SiteDecor::merops;
+ use SiteDecor::plain;
+-use SiteDecor::sangertest;
+ use SiteDecor::services;
+-use SiteDecor::treefam;
+ use SiteDecor::wtgc;
+ use SiteDecor::wtsi;
+ use SiteDecor::yourgenome;
+Index: SiteDecor/blast.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/blast.pm,v
+retrieving revision 1.5
+diff -u -r1.5 blast.pm
+--- SiteDecor/blast.pm	8 Apr 2011 11:14:24 -0000	1.5
++++ SiteDecor/blast.pm	31 Jan 2013 11:17:11 -0000
+@@ -40,8 +40,8 @@
+   my $self = shift;
+   my $header = q(
+     <div id="header"><div id="logo">
+-		  <a href="/"><img src="http://www.sanger.ac.uk/i/sanger-logo.png" alt="Wellcome Trust Sanger Institute"></a>
+-	  </div></div>
++      <a href="/"><img src="http://www.sanger.ac.uk/s-inst/gfx/sanger-logo.png" alt="Wellcome Trust Sanger Institute"></a>
++    </div></div>
+   );
+   $header .= $self->tabs1;
+   $header .= $self->tabs2;
+@@ -70,27 +70,32 @@
+   my $footer = $self->wrap_bottom;
+   $footer .= q(
+     <div id="footer">
+-	    <ul id="footer_links">
+-		    <li>
+-			    <a href="http://www.sanger.ac.uk/help/">Help</a>
+-		    </li>
+-		    <li>|
+-		    </li>
+-		    <li>
+-			    <a href="http://www.sanger.ac.uk/about/contact/">Contact us</a>
+-		    </li>
+-		    <li>|
+-		    </li>
+-		    <li>
+-			    <a href="http://www.sanger.ac.uk/legal/">Legal</a>
+-		    </li>
+-		    <li>|
+-		    </li>
+-		    <li>
+-			    <a href="http://www.sanger.ac.uk/datasharing/">Data sharing</a>
+-		    </li>
+-	    </ul><br>
+-	    Wellcome Trust Sanger Institute, Genome Research Limited (reg no. 2742969) is a charity registered in England with number 1021457<br>
++      <ul id="footer_links">
++        <li>
++          <a href="http://www.sanger.ac.uk/help/">Help</a>
++        </li>
++        <li>|
++        </li>
++        <li>
++          <a href="http://www.sanger.ac.uk/about/contact/">Contact us</a>
++        </li>
++        <li>|
++        </li>
++        <li>
++          <a href="http://www.sanger.ac.uk/legal/">Legal</a>
++        </li>
++        <li>|
++        </li>
++        <li>
++          <a href="http://www.sanger.ac.uk/datasharing/">Data sharing</a>
++        </li>
++        <li>|
++        </li>
++        <li>
++          <a href="http://www.sanger.ac.uk/legal/cookiespolicy.html">Cookie Policy</a>
++        </li>
++      </ul><br>
++      Wellcome Trust Sanger Institute, Genome Research Limited (reg no. 2742969) is a charity registered in England with number 1021457<br>
+     </div>
+   );
+   return $footer;
+@@ -117,7 +122,7 @@
+   my $self = shift;
+   my $tabs = q{
+ <div id="navTabs">
+-	<ul id="navLeft" style="margin:0;padding:0">
++  <ul id="navLeft" style="margin:0;padding:0">
+   };
+   foreach my $ent (@{$self->tabs1_cats}){
+     my $t = $ent->[1];
+@@ -154,7 +159,7 @@
+   my $self = shift;
+   my $tabs = q{
+ <div id="NavTabs2">
+-	<ul id="Tabs2">
++  <ul id="Tabs2">
+   };
+   foreach my $ent (@{$self->tabs2_cats}){
+     my $t = $ent->[1];
+@@ -201,4 +206,4 @@
+ </div>
+   };
+ }
+-1;
+\ No newline at end of file
++1;
+Index: SiteDecor/ccc.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/ccc.pm,v
+retrieving revision 6.34
+diff -u -r6.34 ccc.pm
+--- SiteDecor/ccc.pm	23 Nov 2012 11:45:55 -0000	6.34
++++ SiteDecor/ccc.pm	31 Jan 2013 11:17:11 -0000
+@@ -18,8 +18,8 @@
+ 
+ our $VERSION = do { my @r = (q$Revision: 6.34 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
+ our $JSFILES = {
+-		'/js/urchin.js'	   => q(),
+-	       };
++                '/js/urchin.js'   => q(),
++               };
+ 
+ sub init_defaults {
+   my $self = shift;
+@@ -37,18 +37,18 @@
+ 
+ sub html_headers {
+   my $self   = shift;
+-  my $banner = $self->{'banner'} || "";
+-  my $title  = $self->{'title'}  || $banner || "WTCCC: The Wellcome Trust Case Control Consortium";
++  my $banner = $self->{'banner'} || q();
++  my $title  = $self->{'title'}  || $banner || 'WTCCC: The Wellcome Trust Case Control Consortium';
+ 
+   my ($hostname)   = (hostname()) =~ /^([^\.]+)/mx;
+   my $heads = {
+-	       'robots'       => $self->robots()      ?qq(    <meta name="robots" content="@{[$self->robots()]}" />\n):q(),
+-	       'keywords'     => $self->keywords()    ?qq(    <meta name="keywords" content="@{[$self->keywords()]}" />\n):q(),
+-	       'description'  => $self->description() ?qq(    <meta name="description" content="@{[$self->description()]}" />\n):q(),
+-	       'script'       => $self->script()      ?qq(    <script type="text/javascript">@{[$self->script()]}</script>\n):q(),
+-	       'style'        => $self->style()       ?qq(    <style type="text/css">@{[$self->style()]}</style>\n):q(),
+-	       'metaredirect' => q(),
+-	      };
++               'robots'       => $self->robots()      ?qq(    <meta name="robots" content="@{[$self->robots()]}" />\n):q(),
++               'keywords'     => $self->keywords()    ?qq(    <meta name="keywords" content="@{[$self->keywords()]}" />\n):q(),
++               'description'  => $self->description() ?qq(    <meta name="description" content="@{[$self->description()]}" />\n):q(),
++               'script'       => $self->script()      ?qq(    <script type="text/javascript">@{[$self->script()]}</script>\n):q(),
++               'style'        => $self->style()       ?qq(    <style type="text/css">@{[$self->style()]}</style>\n):q(),
++               'metaredirect' => q(),
++              };
+   if($self->{'redirect'}) {
+     my $redirect             = q();
+ 
+@@ -57,9 +57,11 @@
+     }
+ 
+     my $redirect_delay       = $self->{'redirect_delay'} || $self->{'redirect_delay'};
++    ##no critic (Literal line breaks) 
+     $heads->{'metaredirect'} = qq(
+     <meta name="robots" content="noindex,follow" />
+     <meta http-equiv="refresh" content="$redirect_delay$redirect" />\n);
++    ##use critic (Literal line breaks)
+   }
+ ###
+   #########
+@@ -68,7 +70,7 @@
+   my @js;
+   my $j    = $self->jsfile();
+   my $dev  = $ENV{'dev'} || q();
+-  $dev = ($dev =~ /test/)?'dev':$dev;
++  $dev = ($dev =~ m/test/ixm)?'dev':$dev;
+ 
+   if($j) {
+     if(ref $j) {
+@@ -91,7 +93,7 @@
+   <head>
+     <title>$title</title>
+ $heads->{'robots'}$heads->{'keywords'}$heads->{'description'}$heads->{'metaredirect'}
+-@{[map {qq(    <link rel="stylesheet" type="text/css" href="$_">\n); } @{$self->stylesheet()}]}
++@{[map {qq(    <link rel="stylesheet" type="text/css" href="$_" />\n); } @{$self->stylesheet()}]}
+ @{[map {qq(    <script type="text/javascript" src="$_" ></script>\n);  } @{$self->jsfile()}]}
+   </head>
+ <body onload="$self->{'onload'}"><!-- host: $hostname-->);
+@@ -118,6 +120,7 @@
+     _userv=0;
+     urchinTracker();
+   </script>
++  <div><a href="http://www.sanger.ac.uk/legal/cookiespolicy.html">Cookies Policy</a></div>
+ </div><!-- end main_content -->
+ </body>
+ </html>\n);
+@@ -127,11 +130,11 @@
+ sub process_link
+ {
+ my $old_link = shift;
+-if ( $old_link =~ m/^http:/ )
++if ( $old_link =~ m/^http:/ixm )
+   {
+-  $old_link =~ s/^http:/https:/ ;
++  $old_link =~ s/^http:/https:/ixm ;
+   }
+-elsif (0 == index($old_link,'/'))
++elsif (0 == (index $old_link, q(/) ))
+   {
+   $old_link = 'https://' . $ENV{'HTTP_HOST'} . $old_link;
+   }
+@@ -160,13 +163,13 @@
+         my ($text, $link) = ($_->{'text'},$_->{'link'});
+         my $display =0;
+         # Only print when not logged in.
+-        if (0 == index($text,'__'))
++        if (0 == (index $text,'__'))
+           {
+-          $text = substr($text,2);
+-          $display = 1;
++          $text = substr $text,2;
++          $display = 1;# if (not $user);
+           }
+         # Only print when logged in.
+-        elsif (0 == index($text,'_'))
++        elsif (0 == (index $text,'_'))
+           {
+ #          $text = substr($text,1);
+ #          $display = 1 if ($user && $url_cache->allowed_url($link));
+@@ -184,9 +187,10 @@
+       }
+     else {
+       $subject = $_; # used later when we get a hash
+-      my $legend = ($user && 'Registered access' eq $subject) ? qq( title="$user logged in") : '';
++#      my $legend = ($user && 'Registered access' eq $subject) ? qq( title="$user logged in") : q();
++      my $legend = q();
+       $menu{$_} = "  <div$legend>$_</div>\n";
+-      $popup{$_} = "";
++      $popup{$_} = q();
+       push @subjects,$_;
+       }
+     } # next content
+@@ -219,12 +223,12 @@
+     foreach (@_)
+       {
+       if ('ARRAY' eq ref $_)
+-	{
++        {
+         foreach (@{$_})
+           {
+           push @{$self->{'stylesheet'}}, $_
+           }
+-	}
++        }
+       else
+         {
+         push @{$self->{'stylesheet'}}, $_
+@@ -248,7 +252,7 @@
+         { push @flatten, $_      }
+       }
+ 
+-    my %defined = map { $_, 1 } @{$self->{'jsfile'}};
++    my %defined = map { $_ => 1 } @{$self->{'jsfile'}};
+     push @{$self->{'jsfile'}},grep { not $defined{$_} } @flatten;
+     }
+   return $self->{'jsfile'};
+Index: SiteDecor/decipher.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/decipher.pm,v
+retrieving revision 1.9
+diff -u -r1.9 decipher.pm
+--- SiteDecor/decipher.pm	24 Aug 2009 15:40:37 -0000	1.9
++++ SiteDecor/decipher.pm	31 Jan 2013 11:17:11 -0000
+@@ -132,6 +132,8 @@
+ sub site_headers {
+   my $self = shift;
+ 
++  $self->read_ini;
++
+   if($self->decor() eq 'printable') {
+     return $self->site_banner();
+   }
+@@ -195,7 +197,7 @@
+             <div id="login_box" style="display:none">
+               <form autocomplete="off" name="ssologin" action="https://enigma$dev.sanger.ac.uk/LOGIN" method="post" >
+                 <input type="hidden" name="destination" value="$protocol://$ENV{'SERVER_NAME'}$uri" />
+-                <label for="credential_0">Username:</label> 
++                <label for="credential_0">UserName:</label> 
+                 <input type="text" name="credential_0" maxlength="128" class="field"/>
+                 <label for="credential_1">Password:</label> 
+                 <input type="password" name="credential_1" maxlength="20" class="field"/>
+@@ -260,6 +262,7 @@
+   #########
+   # need to add check here to see if navigator is present. if not hide navtab and expand main
+   #
++
+   if(@{$nav_entries->{'1'}} || @{$nav_entries->{'2'}} || $self->heading()) {
+       $site_headers .= qq(       <div id="main" @{[$is_hidden?qq(class="expanded"):qq(class="collapsed")]}>);
+    } else {
+@@ -284,6 +287,7 @@
+     }
+     $site_headers .= $self->site_banner($banner);
+   }
++
+   return $site_headers;
+ }
+ 
+@@ -336,7 +340,7 @@
+       </div>
+       <div id="legal">
+         <p class="right">$lastmod</p>
+-        <p class="left">Registered charity number 210183</p>
++        <p class="left">Registered charity number 1021457</p>
+         <p class="middle">@{[($self->decor() eq "printable")?q():qq(<a href="http://www$dev.sanger.ac.uk/notices/release-policy.shtml">Data Release Policy</a> | <a href="http://www$dev.sanger.ac.uk/notices/use-policy.shtml">Conditions of Use</a> | <a href="http://www$dev.sanger.ac.uk/notices/copyright.shtml">Copyright</a>)]}</p>
+       </div>
+     </div> <!-- end of collapseFOOT div -->
+Index: SiteDecor/genedb.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/genedb.pm,v
+retrieving revision 6.2
+diff -u -r6.2 genedb.pm
+--- SiteDecor/genedb.pm	27 Apr 2009 10:20:36 -0000	6.2
++++ SiteDecor/genedb.pm	31 Jan 2013 11:17:11 -0000
+@@ -21,17 +21,26 @@
+ sub html_headers {
+   my $self  = shift;
+   my $title = $self->{'title'} || "";
+-  return qq[
++  return q[
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+-<html><head>
+-<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+-    <title>${title} - GeneDB</title>
+-
+-    <link rel="stylesheet" href="http://beta.genedb.org/includes/style/alternative.css" type="text/css">
+-    <link rel="stylesheet" href="http://beta.genedb.org/includes/style/menu.css" type="text/css">
+-<link rel="stylesheet" type="text/css" href="http://beta.genedb.org/includes/style/wtsi.css">
+-<link rel="stylesheet" type="text/css" href="http://beta.genedb.org/includes/style/genedb/genePage.css">
++<html>
++<head>
++    <title>Homepage - GeneDB</title>
++
++    <script type="text/javascript" src="http://js.sanger.ac.uk/urchin.js"></script>
++
++    <link rel="stylesheet" href="/includes/style/genedb/main.css" type="text/css" />
++    <script type="text/javascript" src="/includes/scripts/jquery/jquery-genePage-combined.js"></script>
++
++    <script type="text/javascript">
++        $(function(){
++          $("#nav > li")
++            .mouseover(function(){$(this).addClass("over");})
++            .mouseout (function(){$(this).removeClass("over");});
++        });
++    </script>
+ 
++    
+ </head>
+ ];
+ }
+@@ -39,27 +48,128 @@
+ sub site_headers {
+   my $self = shift;
+   my $title = $self->{'title'} || "GeneDB";
+-  return qq[
+-<body class="genePage">
+-
+-<table id="header"><tbody>
+-    <tr id="top-row">
+-        <td id="logo" rowspan="2" align="left" valign="top"><a href="http://beta.genedb.org/Homepage"><img src="http://beta.genedb.org/includes/images/genedb-logo.gif" alt="GeneDB" border="0" height="51" width="171"></a></td>
+-        <td id="name">${title}</td>
+-        <td id="search">
+-        <form name="searchForm" action="http://beta.genedb.org/Query" method="GET">
+-          <input name="taxons" value="" type="hidden">
+-          <input name="q" value="allNameProduct" type="hidden">
+-          <input name="pseudogenes" value="true" type="hidden">
+-          <input name="product" value="true" type="hidden">
+-          <input name="allNames" value="true" type="hidden">
+-          <input id="query" name="search" align="middle" type="text">
+-          <input id="submit" value="Search" title="Search" align="middle" type="submit"><br>
+-        </form>
+-        </td>
+-    </tr>
+-</tbody></table>
+-
++  return q[
++<body>
++<div id="container">
++<div id="header">
++<a href="/Homepage"><img src="/includes/image/GeneDB-logo.png" border="0" alt="GeneDB" class="float-left-and-offset" id="logo" /></a>
++
++<div class="float-right" >
++<div class="baby-blue-top"></div>
++<div id="search" class="baby-blue">
++<form action="/QuickSearchQuery" method="get">
++<table cellpadding="0" cellspacing="0" width="100%" class="search-table">
++<tr>
++<td>
++<input type="hidden" name="pseudogenes" value="true" />
++<input type="hidden" name="product" value="true" />
++<input type="hidden" name="allNames" value="true" />
++<input type="text" name="searchText" class="search-box" /></td><td align="right"><input type="image" src="/includes/image/button-search.gif" /></td>
++</tr>
++<tr>
++<td colspan="2">
++
++<select name="taxons">
++<option  class="Level0DropDown" value="Root">&nbsp;&nbsp;All Organisms</option>
++<option  class="Level1DropDown" value="Bacteria">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bacteria</option>
++<option  class="Level2DropDown" value="Bfragilis_NCTC9343">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B. fragilis NCTC9343</option>
++<option  class="Level2DropDown" value="Bordetella">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bordetella</option>
++<option  class="Level3DropDown" value="Bbronchiseptica">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B. bronchiseptica</option>
++<option  class="Level3DropDown" value="Bparapertussis">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B. parapertussis</option>
++<option  class="Level2DropDown" value="Burkholderia">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Burkholderia</option>
++<option  class="Level3DropDown" value="Bcenocepacia">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B. cenocepacia</option>
++<option  class="Level3DropDown" value="Bpseudomallei">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;B. pseudomallei</option>
++<option  class="Level2DropDown" value="Cabortus">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C. abortus</option>
++<option  class="Level2DropDown" value="Cdiphtheriae">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C. diphtheriae</option>
++<option  class="Level2DropDown" value="Cjejuni">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C. jejuni</option>
++<option  class="Level2DropDown" value="Ecarotovora">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E. carotovora</option>
++<option  class="Level2DropDown" value="Rleguminosarum">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R. leguminosarum</option>
++<option  class="Level2DropDown" value="Salmonella">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Salmonella</option>
++<option  class="Level3DropDown" value="Styphi">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. typhi</option>
++<option  class="Level3DropDown" value="Styphimurium">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. typhimurium</option>
++<option  class="Level2DropDown" value="Scoelicolor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. coelicolor</option>
++<option  class="Level2DropDown" value="Staphylococcus">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Staphylococcus</option>
++<option  class="Level3DropDown" value="Saureus_MRSA252">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. aureus MRSA252</option>
++<option  class="Level3DropDown" value="Saureus_MSSA476">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. aureus MSSA476</option>
++<option  class="Level2DropDown" value="Streptococcus">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Streptococcus</option>
++<option  class="Level3DropDown" value="Spyogenes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. pyogenes</option>
++<option  class="Level1DropDown" value="Helminths">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Helminths</option>
++<option  class="Level2DropDown" value="Platyhelminths">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Platyhelminths</option>
++<option  class="Level3DropDown" value="Sjaponicum">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. japonicum</option>
++<option  class="Level3DropDown" value="Smansoni">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S. mansoni</option>
++<option  class="Level1DropDown" value="Protozoa">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Protozoa</option>
++<option  class="Level2DropDown" value="Apicomplexa">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apicomplexa</option>
++<option  class="Level3DropDown" value="Etenella">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E. tenella</option>
++<option  class="Level3DropDown" value="Ncaninum">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;N. caninum</option>
++<option  class="Level3DropDown" value="Plasmodium">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Plasmodium</option>
++<option  class="Level4DropDown" value="Pchabaudi">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P. chabaudi</option>
++<option  class="Level4DropDown" value="Pfalciparum">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P. falciparum</option>
++<option  class="Level4DropDown" value="Pknowlesi">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P. knowlesi</option>
++<option  class="Level4DropDown" value="Pvivax">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P. vivax</option>
++<option  class="Level4DropDown" value="Pyoelii">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P. yoelii</option>
++<option  class="Level2DropDown" value="Kinetoplastida">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Kinetoplastida</option>
++<option  class="Level3DropDown" value="Leishmania">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leishmania</option>
++<option  class="Level4DropDown" value="Lbraziliensis">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L. braziliensis</option>
++<option  class="Level4DropDown" value="Linfantum">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L. infantum</option>
++<option  class="Level4DropDown" value="Lmajor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L. major</option>
++<option  class="Level4DropDown" value="Lmexicana">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L. mexicana</option>
++<option  class="Level3DropDown" value="Trypanosoma">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trypanosoma</option>
++<option  class="Level4DropDown" value="Tbruceibrucei427">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T. brucei brucei 427</option>
++<option  class="Level4DropDown" value="Tbruceibrucei927">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T. brucei brucei 927</option>
++<option  class="Level4DropDown" value="Tbruceigambiense">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T. bruceigambiense</option>
++<option  class="Level4DropDown" value="Tcongolense">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T. congolense</option>
++<option  class="Level4DropDown" value="Tcruzi">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T. cruzi</option>
++<option  class="Level4DropDown" value="Tvivax">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T. vivax</option>
++</select>
++</td>
++</tr>
++</table>
++</form>
++</div>
++<div class="baby-blue-bot"></div>
++</div><!-- end float right of search box -->
++<br class="clear" />
++</div><!-- end header block -->
++
++<br class="clear" />
++
++<div id="navigation">
++<ul id="nav">
++<li><a href="/Homepage">Home</a>
++</li>
++
++<li><a href="/Page/aboutUs">About us</a></li>
++<li class="has-sub"><a href="/Query">Searches</a>
++<ul class="sub-menu">
++<li><a href="/Query/geneType?taxons=" >By Gene Type</a></li>
++<li><a href="/Query/geneLocation?taxons=" >By Location</a></li>
++<li><a href="/Query/proteinLength?taxons=" >By Protein Length</a></li>
++<li><a href="/Query/proteinMass?taxons=">By Molecular Mass</a></li>
++<li><a href="/Query/proteinNumTM?taxons=">By No. TM domains</a></li>
++<li><a href="/Query/proteinTargetingSeq?taxons=">By Targeting Seqs.</a></li>
++<li><a href="/Query/simpleName?taxons=">Gene names</a></li>
++<li><a href="/Query/product?taxons=">Product</a></li>
++
++<li><a href="/Query/go?taxons=">GO term/id</a></li>
++<li><a href="/Query/ec?taxons=">EC number</a></li>
++<li><a href="/Query/pfam?taxons=">Pfam ID or keyword</a></li>
++</ul>
++<!-- end sub menu -->
++</li>
++<li class="has-sub"><a href="">Browse</a>
++<ul class="sub-menu">
++<li><a href="/category/genedb_products?taxons=">Products</a></li>
++<li><a href="/category/ControlledCuration?taxons=">Controlled Curation</a></li>
++<li><a href="/category/biological_process?taxons=">Biological Process</a></li>
++<li><a href="/category/cellular_component?taxons=">Cellular Component</a></li>
++<li><a href="/category/molecular_function?taxons=">Molecular Function</a></li>
++</ul>
++</li>
++<li><a href="/History">History</a></li>
++<!-- end sub menu -->
++</ul>
++</div><!-- end navigation block -->
++<div style="font-size:1.3em">
+ ];
+ }
+ 
+@@ -71,17 +181,35 @@
+ sub site_footers {
+   my $self = shift;
+     
+-  return qq[
+-  <br>
+-<br>
+-<table class="footer" width="100%">
+-  <tbody><tr height="20">
+-    <td style="" align="left" width="33%">Hosted by the <a href="http://www.sanger.ac.uk/">Sanger Institute</a></td>
+-    <td style="" align="center" width="34%"><!-- Curator feedback --></td>
+-    <td style="" align="right" width="33%"><!-- Technical feedback--></td>
+-  </tr>
+-</tbody></table>
+-</body></html>
++  return q[
++</div>
++<br class="clear" />
++
++<div id="footer">
++<div class="footer-top"></div>
++<div class="light-grey">
++<table cellpadding="0" cellspacing="0" width="100%">
++<tr>
++<td valign="top" align="left">
++<p>&copy; 2009 and hosted by the <a href="http://www.sanger.ac.uk/">Sanger Institute</a></p>
++</td>
++
++<td valign="top" align="right">
++<p>Comments/Questions: <a href="mailto:webmaster@genedb.org">Email us</a>
++</td>
++</tr>
++</table>
++</div>
++<div class="footer-bot"></div>
++</div><!-- end footer -->
++</div><!-- end container -->
++
++<script type="text/javascript">
++_userv=0;
++urchinTracker();
++</script>
++</body>
++</html>
+   ];
+ }
+ 
+Index: SiteDecor/meropstest.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/Attic/meropstest.pm,v
+retrieving revision 1.34
+diff -u -r1.34 meropstest.pm
+--- SiteDecor/meropstest.pm	14 Dec 2009 16:18:57 -0000	1.34
++++ SiteDecor/meropstest.pm	31 Jan 2013 11:17:11 -0000
+@@ -8,7 +8,11 @@
+ package SiteDecor::meropstest;
+ use strict;
+ use warnings;
++use Carp;
+ use base qw(SiteDecor);
++use Website::DBStore;
++our $H_CACHE = {};
++our $H_ID    = {};
+ 
+ sub init_defaults {
+   my $self = shift;
+@@ -28,7 +32,7 @@
+ sub fields {
+   my $self = shift;
+   my @fields = $self->SUPER::fields;
+-  push @fields, qw( body_class content_class );
++  push @fields, qw( lastmod body_class content_class );
+   return @fields;
+ }
+ 
+@@ -38,38 +42,51 @@
+ 
+ #############################################
+ # Determine $config_file
+-
+-  my $inifile = $self->{'inifile'};
+-  my $req_uri = $ENV{'REQUEST_URI'} || q();
+-
+   if($self->ini_loaded()) {
+     return;
+   }
++  my ($sidebar,$id) = $self->stuff();
++
++  my $content = ($self->{content_class})?$self->{content_class}:'content';
+ 
++  $html_headers .= qq(  <div class="sidebar"$id>
++      $sidebar
++  </div><!-- end sidebar -->
++  <div class="$content">\n);
++
++  return $html_headers;
++}
++
++sub stuff {
++  my $self    = shift;
++
++# key = $req_uri+$ENV{'DOCUMENT_ROOT'}+$inifile
++
++  my $inifile = $self->{'inifile'};
++  my $req_uri = $ENV{'REQUEST_URI'} || q(); # path to script
+   if(!$inifile && $req_uri =~ /^\/(perl|cgi\-bin)/mx) {
+     #  return;
+   }
+ 
+-  my ($header,$header_global);
++  my ($header,$header_direct,$header_global);
++# my $header_file = 'default_sidebar.yml';
+ 
+   if($inifile) {
+     #########
+     # determine full path to configured header files
+     #
+-
+-    my $req = $ENV{'REQUEST_URI'};     # path to script
+-
+     my $tld;
+     # Strip cgi-bin or perl:
+-    if($req =~ m{/(cgi-bin|perl)/([^/]+)/}mx) {
++    if($req_uri =~ m{/(cgi-bin|perl)/([^/]+)/}mx) {
+       $tld = $2;
+-    } elsif($req !~ /(cgi-bin|perl)/mx) {
+-      ($tld) = $req =~ m{/([^/]+)/$}mx;                      # last part of path (?)
++    } elsif($req_uri !~ /(cgi-bin|perl)/mx) {
++      ($tld) = $req_uri =~ m{/([^/]+)/$}mx;                      # last part of path (?)
+     }
+     $tld           = $tld?"$tld/":q();                       # add a backslash
+ 
+     ($header)      = $inifile =~ /([a-zA-Z0-9\/\_\-\.]+)/mx; # anything from inifile
+     my $dr          = $ENV{'DOCUMENT_ROOT'} ||q();
++    $header_direct  = qq($dr/$header);
+     $header         = qq($dr/$tld$header);
+     $header_global  = qq($dr/default_sidebar.yml);           # just look at root for default sidebar
+   }
+@@ -86,49 +103,80 @@
+     $header_global  = qq($dr/default_sidebar.yml);
+   }
+ 
+-  $header        =~ s|//|/|mxg;
++  $header        =~ s{//}{/}mxg;
++
+ 
+-  my $sidebar = q();
++  my $sidebar    = q();
+   my $sidebar_id = q();
+-  my $header_file = q();
+-  if(-f $header) {
+-    $header_file = $header;
+-  }
+-  elsif (-f $header_global) {
+-    $header_file = $header_global;
+-  }
+ 
+-  if ($header_file) {
+-    eval {
+-      my $config = YAML::LoadFile($header_file);
+-      $sidebar = q();
+-      for my $entry (@{$config}) {
+-        if ($entry->{'html_sidebar_id'}) {
+-          $sidebar_id = q( id=').$entry->{'html_sidebar_id'}.q(');
+-        }
+-        else {
+-          $sidebar .= $self->create_menu($entry);
++  my $header_file = q();#/Users/mw6/webcvs/MEROPS_docs/htdocs/default_sidebar.yml);
++
++  # Only use files that exist = a file op.
++#  if ($header && -f $header) {
++#    $header_file = $header;
++#  }
++#  elsif ($header_direct && -f $header_direct) {
++#    $header_file = $header_direct;
++#  }
++#  elsif (-f $header_global) {
++#    $header_file = $header_global;
++#  }
++  $header_file = $header || $header_direct || $header_global;
++  unless (-f $header_file) {
++    $header_file = $header_direct || $header_global;
++    unless (-f $header_file) {
++      $header_file = $header_global;
++      unless (-f $header_file) {
++        $header_file = q();
++        $sidebar = q(You need a default_sidebar.yml);
++        carp "Not found: $header_file";
++        return ($sidebar,$sidebar_id);
+         }
+       }
+-    };
+-    if ($@) {
+-      warn "Problems : $@";
+     }
+-    $self->ini_loaded(1);
+-  }
+-  else  {
+-    $sidebar = q(You need a default_sidebar.yml);
+-    warn "Not found: $header_file";
+-  }
+ 
+-  my $content = ($self->{content_class})?$self->{content_class}:'content';
++  # warn 'H='.$header_file;
++  if ($H_CACHE->{$header_file}) {
++    # warn "got from self";
++    my $sidebar    = $H_CACHE->{$header_file}->{sidebar};
++    my $sidebar_id = $H_CACHE->{$header_file}->{id};
++    return ($sidebar,$sidebar_id);
++  }
++
++  #   if (!$self->{dbstore}) {
++  #     $self->{dbstore} = Website::DBStore->new();
++  #   }
++  #  my $dbstore= $self->{dbstore};
++  #   if ($sidebar = $dbstore->get($header_file)) {
++  #     warn "got from database";
++  #     $self->{sidebar}->{$header_file} = $sidebar;
++  #   } else {
++
++  eval {
++    my $config = YAML::LoadFile($header_file);
++    $sidebar = q();
++    for my $entry (@{$config}) {
++      if ($entry->{'html_sidebar_id'}) {
++        $sidebar_id = q( id=').$entry->{'html_sidebar_id'}.q(');
++      } else {
++        $sidebar .= $self->create_menu($entry);
++      }
++    }
++  };
++  if ($@) {
++    carp "Problems : $@";
++    }
+ 
+-  $html_headers .= qq(  <div class="sidebar"$sidebar_id>
+-      $sidebar
+-  </div><!-- end sidebar -->
+-  <div class="$content">\n);
++  # warn " $header_file / sidebar = ".length($sidebar);
+ 
+-  return $html_headers;
++  # warn "Saving..";
++  # $dbstore->set($sidebar,$header_file,5); # 5 minutes
++  $H_CACHE->{$header_file}->{sidebar} = $sidebar;
++  $H_CACHE->{$header_file}->{id}         = $sidebar_id || q();
++# warn "$sidebar_id | $header_file";
++
++  $self->ini_loaded(1);
++  return ($sidebar,$sidebar_id);
+ }
+ 
+ sub site_body_tag {
+@@ -140,7 +188,7 @@
+   if(grep { m{/js/sidebar.js}mx } @{$self->jsfile()}) {
+     $onload = "sidebar_default(); $onload;";
+   }
+-	$onload  = $onload?q( onload="$onload"):q();
++	$onload  = $onload?qq( onload="$onload"):q();
+   return sprintf q(  <body%s%s>), $class, $onload;
+ }
+ 
+@@ -150,12 +198,12 @@
+ 
+   if(defined $self->{'banner'}) {
+     my $banner = q();
+-    if($self->{'bannercase'} eq "uc") {
+-      $banner = uc($self->{'banner'});
+-    } elsif($self->{'bannercase'} eq "ucfirst") {
+-      $banner = ucfirst($self->{'banner'});
++    if($self->{'bannercase'} eq 'uc') {
++      $banner = uc $self->{'banner'};
++    } elsif($self->{'bannercase'} eq 'ucfirst') {
++      $banner = ucfirst $self->{'banner'};
+     } else {
+-      $banner = lc($self->{'banner'});
++      $banner = lc $self->{'banner'};
+     }
+     $site_headers .= $self->site_banner($banner);
+   }
+@@ -183,21 +231,32 @@
+   my $lastmod = q();
+   my $req_uri = $ENV{'REQUEST_URI'} || q();
+ 
+-  if($ENV{'LAST_MODIFIED'}) {
++  if ($self->{lastmod}) {
++    $lastmod = q(Page created ).($self->{'lastmod'}->{'text'} || (get_time($self->{'lastmod'}->{'time'})));
++  }
++  elsif($ENV{'LAST_MODIFIED'}) {
+     $lastmod = qq(Last Modified $ENV{'LAST_MODIFIED'});
+-
+   }
+-  else {
++  elsif($req_uri =~ m{/(cgi-bin|perl)/([^/]+)}mx) {
++    eval {
++      my ($conf_file) = ($ENV{'DOCUMENT_ROOT'}.'/../data/sitedefs.yml') =~ m{([a-z\d\./_]+)}mix;
++      my $config = YAML::LoadFile($conf_file);
++      my $date = $config->{merops_rel_date};
++      if ($date) { $lastmod = 'Page created '.$date }
++      };
++  }
++
++  if (not $lastmod) {
+     #########
+     # Look for the request_uri document
+     #
+-    my ($fn) = "$ENV{'DOCUMENT_ROOT'}/$req_uri" =~ m|([a-z\d\./_]+)|mix;
++    my ($fn) = "$ENV{'DOCUMENT_ROOT'}/$req_uri" =~ m{([a-z\d\./_]+)}mix;
+ 
+     #########
+     # If that doesn't exist try the script_filename
+     #
+     if($fn && !-e $fn) {
+-      ($fn) = $ENV{'SCRIPT_FILENAME'}||q() =~ m|([a-z\d\./_]+)|mix;
++      ($fn) = $ENV{'SCRIPT_FILENAME'}||q() =~ m{([a-z\d\./_]+)}mix;
+     }
+ 
+     if($fn && -e $fn) {
+@@ -213,7 +272,7 @@
+       <div class="footer">
+         <p class="right"><a href='/cgi-bin/feedback'>feedback</a><br />$lastmod</p>
+         <p class="left"><img src="/gfx/wtlogo.gif" alt="Wellcome Trust logo" /><br />Funding from the <a href="http://www.wellcome.ac.uk">Wellcome Trust</a></p>
+-        <p class="middle">&copy; 2009 WTSI<br /><a href="/about/availability.shtml">Terms of use</a></p>
++        <p class="middle">&copy; 2011 WTSI<br /><a href="/about/availability.shtml">Terms of use</a></p>
+       </div>
+     </div><!-- end class content -->
+     <script type="text/javascript">
+@@ -227,17 +286,17 @@
+ sub create_menu {
+   my ($self,$entry) = @_;
+   my $output = q{};
+-  while ((my $key, my $value) = each %$entry) {
++  while ((my $key, my $value) = each %{$entry}) {
+     if (ref $value eq 'HASH') {
+ 
+       my $is_li = 0;
+-      my ($has_children_s,$has_children_e) = ('','');
+-      if ($value->{'class'} && $value->{'class'} ne 'title' && $value->{'class'} ne 'switch' && $value->{'class'} !~ /^bigtext/ )
++      my ($has_children_s,$has_children_e) = (q(),q());
++      if ($value->{'class'} && $value->{'class'} ne 'title' && $value->{'class'} ne 'switch' && $value->{'class'} !~ /^bigtext/xm )
+         {
+         if ($is_li && $value->{'sub'} && @{$value->{'sub'}})
+           {
+-          $has_children_s = "<ul>";
+-          $has_children_e = "</ul>";
++          $has_children_s = '<ul>';
++          $has_children_e = '</ul>';
+           $is_li = 1;
+           }
+         }
+@@ -246,28 +305,28 @@
+       my $title = ($value->{'title'}) ? qq( title="$value->{'title'}"): q();
+ 
+       $output .= $is_li ? qq($has_children_s<li>):q();
+-      my $close = q();
++      my $close_line = q();
+ 
+       if ($value->{'link'})
+         {
+         $output .= qq(<a href="$value->{'link'}"$class$title>$key</a>);
+-        $close = qq(\n);
++        $close_line = qq(\n);
+         }
+       else
+         {
+         $output .= qq(<p$class>$key</p>);
+-        $close = qq(\n);
++        $close_line = qq(\n);
+         }
+-      $close .= $is_li ? qq(</li>$has_children_e):q();
++      $close_line .= $is_li ? qq(</li>$has_children_e):q();
+       if ($value->{'sub'} && @{$value->{'sub'}})
+         {
+         $output .= "\n<ul>\n";
+         for my $sub (@{$value->{'sub'}}) {
+-          $output .= '  '.list_items($self,$sub);
++          $output .= q(  ).list_items($self,$sub);
+           }
+         $output .= '</ul>';
+         }
+-      $output .= $close."\n";
++      $output .= $close_line."\n";
+     }
+     else {
+       if ($value)
+@@ -287,38 +346,37 @@
+ {
+   my ($self,$entry) = @_;
+   my $output = q{};
+-  while ((my $key, my $value) = each %$entry) {
++  while ((my $key, my $value) = each %{$entry}) {
+     if (ref $value eq 'HASH') {
+ 
+       my $class = ($value->{'class'}) ? qq( class="$value->{'class'}"): q();
+       my $title = ($value->{'title'}) ? qq( title="$value->{'title'}"): q();
+ 
+-      my $close = '';
++      my $close_line = q();
+       if ($value->{'link'})
+         {
+         $output .= qq(<li><a href="$value->{'link'}"$class$title>$key);
+-        $close = qq(</a></li>);
++        $close_line = q(</a></li>);
+         }
+       else
+         {
+         $output .= "<li$class>".$key;
+-        $close = qq(</li>\n);
++        $close_line = qq(</li>\n);
+         }
+       if ($value->{'sub'} && @{$value->{'sub'}})
+         {
+         $output .= "<ul>\n";
+         for my $sub (@{$value->{'sub'}}) {
+-          $output .= '  '.list_items($self,$sub);
++          $output .= q(  ).list_items($self,$sub);
+           }
+         $output .= '</ul>';
+         }
+-      $output .= $close."\n";
++      $output .= $close_line."\n";
+     }
+   }
+   return $output;
+ }
+ 
+-
+ sub doc_type {
+   return qq^<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n^;
+Index: Website/Feedback.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/Feedback.pm,v
+retrieving revision 1.36
+diff -u -r1.36 Feedback.pm
+--- Website/Feedback.pm	9 Apr 2009 10:38:31 -0000	1.36
++++ Website/Feedback.pm	31 Jan 2013 11:17:11 -0000
+@@ -54,12 +54,12 @@
+          -->  
+         </style>
+ 	<form action="$ENV{'SCRIPT_NAME'}" method="POST" onsubmit="return compare('mail','e_conf','$EMAIL_CONF_ERROR');">
+-    <input type="hidden" name="referrer" value="@{[$cgi->escapeHTML($cgi->param('referrer')||$ENV{'HTTP_REFERER'}||'')]}">
++    <input type="hidden" name="referrer" value="@{[$cgi->escapeHTML($cgi->param('referrer')||$ENV{'HTTP_REFERER'}||'')]}" />
+     <div id="warning"></div>
+     <table align="center" border="0" cellpadding="0" cellspacing="0" class="violet1">
+      <tr valign="top">
+        <td class="barial">Your Name</td>
+-       <td><input type="entry" name="name" size="40" value="@{[$cgi->escapeHTML($cgi->param('name')||'')]}"></td>
++       <td><input type="entry" name="name" size="40" value="@{[$cgi->escapeHTML($cgi->param('name')||'')]}" /></td>
+      </tr>
+      <tr valign="top">
+        <td class="barial">Your Email</td>
+@@ -90,13 +90,13 @@
+         </td>			
+       </tr>
+       <tr valign="top">
+-        <td class="barial">Details / Comments<br>
+-	  <i><font color="#000080">Please cut and paste<br>
+-	  any diagnostic report,<br>
+-	  which may have<br>
+-	  been generated<br>
+-	  automatically, into<br>
+-	  this field</font></i></td>
++        <td class="barial">Details / Comments<br />
++	  <font color="#000080"><i>Please cut and paste<br />
++	  any diagnostic report,<br />
++	  which may have<br />
++	  been generated<br />
++	  automatically, into<br />
++	  this field</i></font></td>
+         <td><textarea name="comments" cols="40" rows="10">@{[$cgi->escapeHTML($cgi->param('comments')||"Type information here")]}</textarea></td>
+       </tr>
+       <tr>
+Index: Website/ServiceManager.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/ServiceManager.pm,v
+retrieving revision 1.79
+diff -u -r1.79 ServiceManager.pm
+--- Website/ServiceManager.pm	11 Sep 2012 08:27:17 -0000	1.79
++++ Website/ServiceManager.pm	31 Jan 2013 11:17:11 -0000
+@@ -12,18 +12,18 @@
+ our $VERSION = do { my @r = (q$Revision: 1.79 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
+ our $DEBUG   = 0;
+ our $SERVERS = {
+-  'frontend' => {
+-    '_services' => [qw(proxy)],
+-    '_lsf'      => 'off',
+-    'intweb2'   => {
+-      '_shell'    => 'bash',
+-      '_nodes'    => [qw(intweb2a intweb2b)],
+-    },
+-    'wwwsrv'   => {
+-      '_shell' => 'csh',
+-      'webfe'  => [qw(webfe-red1 webfe-red2 webfe-yellow1 webfe-yellow2)],
+-    },
+-  },
++#  'frontend' => {
++#    '_services' => [qw(proxy)],
++#    '_lsf'      => 'off',
++#    'intweb2'   => {
++#      '_shell'    => 'bash',
++#      '_nodes'    => [qw(intweb2a intweb2b)],
++#    },
++#    'wwwsrv'   => {
++#      '_shell' => 'csh',
++#      'webfe'  => [qw(webfe-red1 webfe-red2 webfe-yellow1 webfe-yellow2)],
++#    },
++#  },
+   'backend'  => {
+     '_lsf'      => 'off',
+     '_shell'    => 'bash',
+@@ -34,19 +34,19 @@
+         '_services' => [qw(heavy lite webpublishd)],
+       },
+     },
+-    'dev'      => {                   
++    'dev'      => {
+       '_services' => [qw(heavy lite admin)],
+       '_nodes'    => [qw(webdev2 webdev3)],
+     },
+   },
+-  'wtccc'    =>  {  
+-    '_services' => [qw(wtccc_live wtccc_dev)],
+-    '_lsf'      => 'off',
+-    '_shell'    => 'bash',
+-    'genoweb1'  => {
+-      '_nodes' => [qw(genoweb1a genoweb1b)],
+-    },
+-  },         
++#  'wtccc'    =>  {
++#    '_services' => [qw(wtccc_live wtccc_dev)],
++#    '_lsf'      => 'off',
++#    '_shell'    => 'bash',
++#    'genoweb1'  => {
++#      '_nodes' => [qw(genoweb1a genoweb1b)],
++#    },
++#  },
+ };
+ 
+ our $SERVICES = {
+Index: Website/webstatus
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/webstatus,v
+retrieving revision 1.13
+diff -u -r1.13 webstatus
+--- Website/webstatus	2 Apr 2009 08:19:52 -0000	1.13
++++ Website/webstatus	31 Jan 2013 11:17:11 -0000
+@@ -88,7 +88,7 @@
+ #      print STDERR qq(srv=$srv, service=$service, lastnode=$lastnode, s -> node=$service->{'node'}, scalar scache=@{[scalar @{$servicecache->{$srv}}]}\n);
+ 
+       if($lastnode && ($service->{'node'} ne $lastnode)) {
+-	print $lastnode, " ";
++	printf "%-${maxnodenamelen}s ", $lastnode;
+ 	for my $servicename (@servicenames) {
+ 	  my $state = $states->{"$lastnode/$servicename"}||"-";
+ 	  printf("%-${COLWIDTH}s ", $state);
+@@ -97,7 +97,7 @@
+       }
+       $lastnode = $service->{'node'};
+     }
+-    print $lastnode, " ";
++	  printf "%-${maxnodenamelen}s ", $lastnode;
+     for my $servicename (@servicenames) {
+       my $state = $states->{"$lastnode/$servicename"}||"-";
+       printf("%-${COLWIDTH}s ", $state);
+Index: Website/portlet/calendar.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/portlet/calendar.pm,v
+retrieving revision 1.1
+diff -u -r1.1 calendar.pm
+--- Website/portlet/calendar.pm	26 Jan 2007 11:04:04 -0000	1.1
++++ Website/portlet/calendar.pm	31 Jan 2013 11:17:11 -0000
+@@ -2,7 +2,7 @@
+ # Author:        rmp
+ # Maintainer:    $Author: rmp $
+ # Created:       2005-04
+-# Last Modified: $Date: 2007-01-26 11:04:04 $
++# Last Modified: $Date: 2007/01/26 11:04:04 $
+ #
+ package Website::portlet::calendar;
+ use strict;

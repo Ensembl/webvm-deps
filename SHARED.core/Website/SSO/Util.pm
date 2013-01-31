@@ -2,8 +2,8 @@
 # Author:        rmp
 # Maintainer:    rmp
 # Created:       2004-10-28
-# Last Modified: $Date: 2009-04-01 08:41:10 $ $Author: jc3 $
-# Id:            $Id: Util.pm,v 1.13 2009-04-01 08:41:10 jc3 Exp $
+# Last Modified: $Date: 2012-08-31 09:19:08 $ $Author: mw6 $
+# Id:            $Id: Util.pm,v 1.14 2012-08-31 09:19:08 mw6 Exp $
 # Source:        $Source: /repos/cvs/webcore/SHARED_docs/lib/core/Website/SSO/Util.pm,v $
 # $HeadURL$
 #
@@ -23,7 +23,7 @@ use MIME::Base64;
 use CGI;
 
 our $AUTH_EXPIRY          = '+2d';
-our $VERSION              = do { my @r = (q$Revision: 1.13 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
+our $VERSION              = do { my @r = (q$Revision: 1.14 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
 our $DEFAULT_AUTHTYPE_EXT = 1;
 our $SESSION_CRYPT_KEY    = q[R7iu1NK+5o/CSiw7/oB9BIDD9UvPD/21Zw+Yu6oJMIZK/KdEn7aW2ReP];
 our @EXPORT_OK            = qw($DEFAULT_AUTHTYPE_EXT);
@@ -224,7 +224,7 @@ Website::SSO::Util -SSO database handle and helper functions
 
 =head1 VERSION
 
-$Revision: 1.13 $
+$Revision: 1.14 $
 
 =head1 SYNOPSIS
 

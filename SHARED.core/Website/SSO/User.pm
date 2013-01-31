@@ -2,8 +2,8 @@ package Website::SSO::User;
 #########
 # Author:        rmp
 # Maintainer:    $Author: mw6 $
-# Last Modified: $Date: 2012-06-11 15:42:01 $
-# Id:            $Id: User.pm,v 1.19 2012-06-11 15:42:01 mw6 Exp $
+# Last Modified: $Date: 2012-08-30 10:19:45 $
+# Id:            $Id: User.pm,v 1.22 2012-08-30 10:19:45 mw6 Exp $
 # Source:        $Source: /repos/cvs/webcore/SHARED_docs/lib/core/Website/SSO/User.pm,v $
 #
 use strict;
@@ -17,7 +17,7 @@ use English qw(-no_match_vars);
 use Carp;
 use URI::Escape;
 
-our $VERSION             = do { my @r = (q$Revision: 1.19 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
+our $VERSION             = do { my @r = (q$Revision: 1.22 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
 our @EXPORT_OK           = qw($AUTH_OK $AUTH_FAIL $AUTH_SHADOW $AUTH_EXPIRED $AUTH_SERVERERR $AUTH_LOCKED);
 our $AUTH_OK             = 1;
 our $AUTH_FAIL           = 2;
@@ -32,6 +32,7 @@ our $LOCK_DURATION       = 1; # in hours
 our $FROM                = q(WTSI Single Sign On <webmaster@sanger.ac.uk>);
 our $SALT_LENGTH         = 16; # 16 random octets
 our $MAX_PASSWORD        = 32; # (stored password occupies 16 + '/' + 32 characters)
+our $MAX_PASSWORD_512    = $SALT_LENGTH + 128 + 1;
 our $SOURCE              = (join '','A'..'Z','a'..'z','0'..'9',q( !"#$%&'()*+,-.:;<=>?@)); # avoid '/'
 
 sub new {
@@ -311,6 +312,26 @@ if ($self->pw_encrypted() eq 'yes') {
   return $salt.'/'.$encoded_pass;
 }
 
+# use mysql native functions to build salt+/+sha512 encoded form of (password+salt+username),
+# ready to store or compare
+sub get_string_512 {
+  my ($self,$salt) = @_;
+  my $username = $self->username();
+  $username =~ tr{\@\. \;}{}d; # avoid guaranteed letters like @ and . (com might be one as well)
+# sha2(x,512) returns 128 hexadecimal characters / hence the left(,$MAX_PASSWORD)
+  my $sth    = $self->util->dbh->prepare('SELECT LEFT( SHA2( CONCAT(
+                                                                    ?, ?, REVERSE(
+                                                                                  LOWER( ? )
+                                                                                 )
+                                                                   ), 512 ), ?)');
+  $sth->execute(
+                                                                    $self->password(), $salt,
+                                                                                         $self->username(),
+                                                                             $MAX_PASSWORD_512 );
+  my ($encoded_pass) = $sth->fetchrow_array();
+  return $salt.'/'.$encoded_pass;
+}
+
 sub authenticate_DB {
   my ($self) = @_;
 #  $self->log_error(qq(authenticate_DB: name=$sname, pass=$spass));
@@ -321,6 +342,7 @@ sub authenticate_DB {
 # retire obsolete password forms 2012 June 11
 #                         password = PASSWORD(?) OR
 #                         password = OLD_PASSWORD(?)));
+# plain sha1 passwords were removed from database 2012 Aug 24
 
   my $sth    = $self->util->dbh->prepare($query);
   $sth->execute($self->username(),
@@ -329,7 +351,7 @@ sub authenticate_DB {
   $sth->finish();
 
   if (defined $dbpass) {
-    warn "Login via original sha";
+    warn "Login via original sha (obsolete)";
 
 ### Update database:
     my $newpass = $self->get_string($self->create_salt());
@@ -339,15 +361,37 @@ sub authenticate_DB {
                              WHERE  username = ?), {}, $newpass, $self->username());
     };
     carp $EVAL_ERROR if($EVAL_ERROR);
-    warn "Password updated from SHA1 to salted SHA1";
-###
     return $AUTH_OK;
-  } else {
-    my ($salt, $db_password) = $self->fetch_salt();
-    my $string = $self->get_string($salt);
-    return ($salt && $string && ($string eq ($salt . q(/) . $db_password)))?$AUTH_OK:$AUTH_FAIL;
+  } elsif ($AUTH_OK eq $self->is_sha1()) {
+    # Update database to salted SHA512
+
+    my $newpass = $self->get_string_512($self->create_salt());
+    eval {
+      $self->util->dbh->do(q(UPDATE user
+                             SET    password=?, modified=now()
+                             WHERE  username = ?), {}, $newpass, $self->username());
+    };
+    carp $EVAL_ERROR if($EVAL_ERROR);
+    # warn "Password updated from salted SHA1 to salted SHA512";
+    return $AUTH_OK;
   }
-  return $AUTH_FAIL;
+
+  return $self->is_sha512(); # If you can't pass this, you have failed.
+# return $AUTH_FAIL;
+}
+
+sub is_sha1 {
+  my $self = shift;
+  my ($salt, $db_password) = $self->fetch_salt();
+  my $string = $self->get_string($salt);
+  return ($salt && $string && ($string eq ($salt . q(/) . $db_password)))?$AUTH_OK:$AUTH_FAIL;
+}
+
+sub is_sha512 {
+  my $self = shift;
+  my ($salt, $db_password) = $self->fetch_salt();
+  my $string = $self->get_string_512($salt);
+  return ($salt && $string && ($string eq ($salt . q(/) . $db_password)))?$AUTH_OK:$AUTH_FAIL;
 }
 
 sub authenticate_NIS {
@@ -595,7 +639,8 @@ sub sessexpiry {
   $sth->execute($self->{'username'});
   my ($sessexpiry) = $sth->fetchrow_array();
   $sth->finish();
-  return $sessexpiry;
+# Users who haven't been created yet dont have sessexpiry, but do need a default value
+  return $sessexpiry || '0000-00-00 00:00:00';
 }
 
 sub all_users {
@@ -739,7 +784,7 @@ sub add {
 			 $self->note(),
 			 $self->ipaddr()     || q(),
 			 $self->sesskey()    || q(),
-			 $self->sessexpiry() || q(),
+			 $self->sessexpiry(),
 			 $self->email());
   };
   if($EVAL_ERROR) {
@@ -1015,7 +1060,7 @@ Website::SSO::User - Inherits and extends Website::Utilities::BasicUser
 
 =head1 VERSION
 
-$Revision: 1.19 $
+$Revision: 1.22 $
 
 =head1 DESCRIPTION
 
