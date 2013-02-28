@@ -161,7 +161,7 @@ MIME modules.
 =item new() - Returns a Website::Utilities::Mail object initalised with the given parameters   
 
 Args: 'to'           = email address the message is sent to
-      'from'         = email address of the sender 
+      'from'         = email address of the sender, this should always be a real address, for replies please specify a Reply-to header.
       'subject'      = text that will appear in the subject line of the message
       'message'      = the text that will appear in the body of the email
       'html_message' = html email message that can be attached

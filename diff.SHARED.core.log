@@ -22,6 +22,7 @@ C SiteDecor/meropstest.pm
 M Website/Feedback.pm
 M Website/ServiceManager.pm
 M Website/webstatus
+M Website/Utilities/Mail.pm
 M Website/portlet/calendar.pm
 ? Sanger/JS5.pm
 ? Sanger/Graphics/GraphViz.pm
@@ -35,7 +36,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor.pm,v
 retrieving revision 6.51
 diff -u -r6.51 SiteDecor.pm
 --- SiteDecor.pm	28 Mar 2012 10:44:53 -0000	6.51
-+++ SiteDecor.pm	31 Jan 2013 11:17:11 -0000
++++ SiteDecor.pm	28 Feb 2013 13:39:33 -0000
 @@ -14,21 +14,15 @@
  use warnings;
  use Data::Dumper;
@@ -64,7 +65,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/blast.pm,v
 retrieving revision 1.5
 diff -u -r1.5 blast.pm
 --- SiteDecor/blast.pm	8 Apr 2011 11:14:24 -0000	1.5
-+++ SiteDecor/blast.pm	31 Jan 2013 11:17:11 -0000
++++ SiteDecor/blast.pm	28 Feb 2013 13:39:33 -0000
 @@ -40,8 +40,8 @@
    my $self = shift;
    my $header = q(
@@ -161,7 +162,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/ccc.pm,v
 retrieving revision 6.34
 diff -u -r6.34 ccc.pm
 --- SiteDecor/ccc.pm	23 Nov 2012 11:45:55 -0000	6.34
-+++ SiteDecor/ccc.pm	31 Jan 2013 11:17:11 -0000
++++ SiteDecor/ccc.pm	28 Feb 2013 13:39:33 -0000
 @@ -18,8 +18,8 @@
  
  our $VERSION = do { my @r = (q$Revision: 6.34 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
@@ -315,7 +316,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/decipher.pm,v
 retrieving revision 1.9
 diff -u -r1.9 decipher.pm
 --- SiteDecor/decipher.pm	24 Aug 2009 15:40:37 -0000	1.9
-+++ SiteDecor/decipher.pm	31 Jan 2013 11:17:11 -0000
++++ SiteDecor/decipher.pm	28 Feb 2013 13:39:33 -0000
 @@ -132,6 +132,8 @@
  sub site_headers {
    my $self = shift;
@@ -365,7 +366,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/genedb.pm,v
 retrieving revision 6.2
 diff -u -r6.2 genedb.pm
 --- SiteDecor/genedb.pm	27 Apr 2009 10:20:36 -0000	6.2
-+++ SiteDecor/genedb.pm	31 Jan 2013 11:17:11 -0000
++++ SiteDecor/genedb.pm	28 Feb 2013 13:39:33 -0000
 @@ -21,17 +21,26 @@
  sub html_headers {
    my $self  = shift;
@@ -605,7 +606,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/Attic/meropstest.pm,
 retrieving revision 1.34
 diff -u -r1.34 meropstest.pm
 --- SiteDecor/meropstest.pm	14 Dec 2009 16:18:57 -0000	1.34
-+++ SiteDecor/meropstest.pm	31 Jan 2013 11:17:11 -0000
++++ SiteDecor/meropstest.pm	28 Feb 2013 13:39:33 -0000
 @@ -8,7 +8,11 @@
  package SiteDecor::meropstest;
  use strict;
@@ -988,7 +989,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/Feedback.pm,v
 retrieving revision 1.36
 diff -u -r1.36 Feedback.pm
 --- Website/Feedback.pm	9 Apr 2009 10:38:31 -0000	1.36
-+++ Website/Feedback.pm	31 Jan 2013 11:17:11 -0000
++++ Website/Feedback.pm	28 Feb 2013 13:39:33 -0000
 @@ -54,12 +54,12 @@
           -->  
          </style>
@@ -1031,7 +1032,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/ServiceManager.pm,v
 retrieving revision 1.79
 diff -u -r1.79 ServiceManager.pm
 --- Website/ServiceManager.pm	11 Sep 2012 08:27:17 -0000	1.79
-+++ Website/ServiceManager.pm	31 Jan 2013 11:17:11 -0000
++++ Website/ServiceManager.pm	28 Feb 2013 13:39:33 -0000
 @@ -12,18 +12,18 @@
  our $VERSION = do { my @r = (q$Revision: 1.79 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
  our $DEBUG   = 0;
@@ -1098,7 +1099,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/webstatus,v
 retrieving revision 1.13
 diff -u -r1.13 webstatus
 --- Website/webstatus	2 Apr 2009 08:19:52 -0000	1.13
-+++ Website/webstatus	31 Jan 2013 11:17:11 -0000
++++ Website/webstatus	28 Feb 2013 13:39:33 -0000
 @@ -88,7 +88,7 @@
  #      print STDERR qq(srv=$srv, service=$service, lastnode=$lastnode, s -> node=$service->{'node'}, scalar scache=@{[scalar @{$servicecache->{$srv}}]}\n);
  
@@ -1117,13 +1118,47 @@ diff -u -r1.13 webstatus
      for my $servicename (@servicenames) {
        my $state = $states->{"$lastnode/$servicename"}||"-";
        printf("%-${COLWIDTH}s ", $state);
+Index: Website/Utilities/Mail.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/Utilities/Mail.pm,v
+retrieving revision 1.7
+diff -u -r1.7 Mail.pm
+--- Website/Utilities/Mail.pm	20 Jan 2009 17:06:17 -0000	1.7
++++ Website/Utilities/Mail.pm	28 Feb 2013 13:39:33 -0000
+@@ -2,7 +2,7 @@
+ # Author:        rmp
+ # Maintainer:    rmp
+ # Created:       2001
+-# Last Modified: $Date: 2009-01-20 17:06:17 $ $Author: jc3 $
++# Last Modified: $Date: 2009/01/20 17:06:17 $ $Author: jc3 $
+ # Source:        $Source $
+ #
+ package Website::Utilities::Mail;
+@@ -133,7 +133,7 @@
+ 
+ =head1 VERSION
+ 
+-This document describes version $Revision: 1.7 $ released on $Date: 2009-01-20 17:06:17 $.
++This document describes version $Revision: 1.7 $ released on $Date: 2009/01/20 17:06:17 $.
+ 
+ =head1 SYNOPSIS
+  
+@@ -161,7 +161,7 @@
+ =item new() - Returns a Website::Utilities::Mail object initalised with the given parameters   
+ 
+ Args: 'to'           = email address the message is sent to
+-      'from'         = email address of the sender 
++      'from'         = email address of the sender, this should always be a real address, for replies please specify a Reply-to header.
+       'subject'      = text that will appear in the subject line of the message
+       'message'      = the text that will appear in the body of the email
+       'html_message' = html email message that can be attached
 Index: Website/portlet/calendar.pm
 ===================================================================
 RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/portlet/calendar.pm,v
 retrieving revision 1.1
 diff -u -r1.1 calendar.pm
 --- Website/portlet/calendar.pm	26 Jan 2007 11:04:04 -0000	1.1
-+++ Website/portlet/calendar.pm	31 Jan 2013 11:17:11 -0000
++++ Website/portlet/calendar.pm	28 Feb 2013 13:39:33 -0000
 @@ -2,7 +2,7 @@
  # Author:        rmp
  # Maintainer:    $Author: rmp $
