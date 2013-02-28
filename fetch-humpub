@@ -1,0 +1,17 @@
+#! /bin/sh
+
+git diff --cached --quiet --exit-code && git diff --quiet --exit-code || {
+    echo "$0 aborting: Working copy is not clean" >&2
+    exit 2
+}
+
+
+rm -rf humpub
+
+cvs -q -d :ext:cvs.internal.sanger.ac.uk:/repos/cvs/anacode co \
+    -d humpub PerlModules
+
+find humpub -type d -name CVS -print0 | xargs -r0 rm -rf
+
+git add -A humpub
+git commit -m "$( basename $0 ) $VSN"
