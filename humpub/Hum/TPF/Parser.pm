@@ -94,7 +94,9 @@ sub parse {
     my %bio_gap_type = (CENTROMERE      => 5,
                         HETEROCHROMATIN => 6,
                         'SHORT-ARM'     => 7,
-                        TELOMERE        => 8
+                        TELOMERE        => 8,
+                        'CENTROMERE_DATA_START' => 9,
+                        'CENTROMERE_DATA_END' =>   10,
                        );
     sub parse_line {
         my ($self, $line_str) = @_;
@@ -115,7 +117,6 @@ sub parse {
 
         my( $row );
         if ($line[0] =~ /GAP/i) {
-            my $identifier = uc $1;
             my ($type_str, $length_str, $remark) = @line[1..3];
             $row = Hum::TPF::Row::Gap->new;
             if ($type_str =~ /type-([1234])/i) {
@@ -153,8 +154,14 @@ sub parse {
             if ($intl =~ /MULTIPLE/i) {
                 $row->is_multi_clone(1);
                 $row->sanger_clone_name($acc);
-            } else {
-                if ($intl ne '?') {
+            }
+            # Handle missing overlong clone-names differently
+            elsif($intl eq '???') {
+                $row->sanger_clone_name($acc);
+                $uniq_clone{$self}{$acc}++;
+            }
+            else {
+                if ($intl !~ /^\?+$/) {
                     $uniq_clone{$self}{$intl}++;
                 }
                 $row->intl_clone_name($intl);

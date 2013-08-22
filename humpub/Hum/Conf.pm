@@ -68,8 +68,6 @@ sub _init {
         HOST => 'lutra7',
         NAME => 'chromoDB',
         RO_USER => 'ottro',
-        RW_USER => 'ottadmin',
-        RW_PASS => 'lutralutra',
     },
 
     SUBMISSIONS_CONNECTION => {
@@ -77,8 +75,6 @@ sub _init {
         HOST => 'otterlive',
         NAME => 'submissions',
         RO_USER => 'ottro',
-        RW_USER => 'ottadmin',
-        RW_PASS => 'lutralutra',
     },
 
     LOUTRE_CONNECTION => {
@@ -182,6 +178,21 @@ Edit C<%Hum::Conf> to add or alter variables.
 
 All the variables are in capitals, so that they
 resemble environment variables.
+
+=head1 KNOWN CALLERS
+
+If you're not listed, you may not get great support.
+
+=over 4
+
+=item * Chromoview
+
+=item * F<update_checksanger> for prodsoft, via F</software/anacode/embl_submissions/PerlModules/>
+
+RT#343302
+L<http://intcvs1.internal.sanger.ac.uk/cgi-bin/viewvc.cgi/checking/checksanger/trunk/sbin/update_checksanger?root=badger&r1=35872&r2=36183>
+
+=back
 
 =head1 SEE ALSO
 
