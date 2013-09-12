@@ -15,15 +15,11 @@ use warnings;
 use Data::Dumper;
 use Config::IniFiles;
 use SiteDecor::blast;
-use SiteDecor::ccc;
-use SiteDecor::das;
 use SiteDecor::genedb;
 use SiteDecor::intweb;
 use SiteDecor::intwebtest;
 use SiteDecor::merops;
 use SiteDecor::plain;
-use SiteDecor::services;
-use SiteDecor::wtgc;
 use SiteDecor::wtsi;
 use SiteDecor::yourgenome;
 use SiteDecor::Menu::jimmac;
@@ -66,29 +62,14 @@ sub init_handler {
   my $handlers       = {
 			q(.*)                              => 'wtsi',     # default
 			'acedb.org'                        => 'acedb',
-			'bloodomics.org'                   => 'bloodomics',
-			'das.ensembl.org'                  => 'das',
-			'das(dev)?.sanger.ac.uk'           => 'das',
-      'decipher(dev)?.sanger.ac.uk'      => 'decipher',
-			'efamily.org.uk'                   => 'efamily',
-      '.ensembl.org'                     => 'plain',
 			'.eucomm.org'                      => 'eucomm',
 			'genedb.org'                       => 'genedb',
-			'genes2cognition.org'              => 'g2c',
 			'.hinxton.org'                     => 'hinxton',
 			'intweb(dev)?.sanger.ac.uk'        => 'intweb',
       'intwebtest.sanger.ac.uk'          => 'intwebtest',
-			'library.sanger.ac.uk'             => 'library',
-                        'mw6-site1.sandbox.sanger.ac.uk'      => 'merops',
-                        'merops(test|.staging|.dev)?.sanger.ac.uk' => 'merops',
-			'microrna(dev)?.sanger.ac.uk'      => 'microrna',
-			'mitocheck.org'                    => 'mitocheck',
-			'services(dev|test)?.sanger.ac.uk' => 'services',
+      'mw6-site1.sandbox.sanger.ac.uk'   => 'merops',
+      'merops(test|.staging|.dev)?.sanger.ac.uk' => 'merops',
 			'test.sanger.ac.uk'                => 'sangertest',
-      'trace(dev|test)?.ensembl.org'     => 'trace',
-			'treefam.org'                      => 'treefam',
-			'.wtccc.org(.uk)?'                 => 'ccc',
-			'wtgc.org'                         => 'wtgc',
 			'yourgenome.org'                   => 'yourgenome',
 		       };
 
@@ -117,13 +98,13 @@ sub fields {
   return qw(coreinifile inifile
             nph noHEAD decor
             redirect redirect_delay
-            title description keywords robots jsfile script onload stylesheet css style cookie 
+            title description keywords robots jsfile script onload stylesheet css style cookie
             navigator navigator2 navigator3 navigator_header navhead heading swoosh
             navigator_align navigator2_align navigator3_align
             banner bannercase
             author headerimg headeralt
             navbar1 navbar2
-            server_name 
+            server_name
             rss atom ical portlets
             remote_addr phogolink
             drp cou cgi
@@ -273,7 +254,7 @@ sub http_headers {
     # remember where this request was generated
     #
     my ($hostname) = (hostname()) =~ /^([^\.]+)/mx;
-    
+
     my $route = q{};
     if ($hostname =~ /.*?-.*?-.*-?/){
       my @parts = split q(-), $hostname;
@@ -719,7 +700,7 @@ sub read_ini {
 	#
 	$link =~ s/XXX_(.*?)_XXX/$subs->{$1}/smgx;
 	$val  =~ s/XXX_(.*?)_XXX/$subs->{$1}/smgx;
-	
+
 	$link?qq(<a href="$link">$val</a>):$val;
       }
     } @params;
@@ -970,7 +951,7 @@ sub protocol {
 }
 
 sub rlogin_data {
-  # This method now returns nothing as we dont want to use this 
+  # This method now returns nothing as we dont want to use this
   # feature anymore. It is a potential security risk.
   return q( );
 }

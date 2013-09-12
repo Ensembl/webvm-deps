@@ -46,8 +46,9 @@ sub send {
   my $mime     = Website::Utilities::MIME->new();
   my $path     = $ENV{'PATH'};
   $ENV{'PATH'} = '/bin:/usr/bin:/usr/sbin:/usr/lib';
-  MIME::Lite->send('smtp', 'localhost', Timeout=>30);
-
+  MIME::Lite->send('smtp', 'mail.sanger.ac.uk', Timeout=>30 );#, Debug=>1 );
+  #MIME::Lite->send('smtp', 'localhost', Timeout=>30, Debug=>1 );
+  #MIME::Lite->send;#( Debug => 1 );
   #########
   # append domainname if not present
   #

@@ -79,13 +79,14 @@ sub decode_token {
 
 sub dbh {
   my $self = shift;
+  my $n = (eval (eval $self->decode_token('UmFuZG9tSVZSUMfq/Got5YFYyVe3bQKuQPOgZC1eT9I60PzRS/KXsWrc+En6YuDfXWUj0bezTHY=')))<<3;
 
   if(!$self->{dbh} &&
      !$self->{_failed}) {
     $SIG{ALRM} = sub { croak 'timeout'; };
     alarm 5;
     eval {
-      $self->{dbh} = DBI->connect('DBI:mysql:database=sso;web-wwwdb-02;port=3358', 'ssorw', 'm0n4_%ey', {RaiseError => 1});
+      $self->{dbh} = DBI->connect('DBI:mysql:database=sso;web-wwwdb-02;port=3358', 'ssorw', 'supersecret' . $n , {RaiseError => 1});
     };
     alarm 0;
 

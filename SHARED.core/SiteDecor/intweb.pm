@@ -176,7 +176,7 @@ sub site_headers {
       </div><!--search box end-->
     </div> <!-- end of collapseHEAD div -->
      <div id="nav_bar">
-      <a href="http://www$dev.sanger.ac.uk/feedback/"><img src="/icons/navigation/email.gif" alt="Contact WTSI Webmaster" title="Contact WTSI Webmaster" /></a>
+      <a href="mailto:web\@sanger.ac.uk"><img src="/icons/navigation/email.gif" alt="Contact WTSI Webmaster" title="Contact WTSI Webmaster" /></a>
       <a href="$printlink"><img src="/icons/navigation/printer.gif" alt="Printer friendly format" title="Printer friendly format" /></a>
       <a href="$ssokey" $loginjs><img src="/icons/navigation/$icons" alt="$login_title" title="$login_title" /></a>
       <a href="http://www$dev.sanger.ac.uk/shared/news-report/atom/20020211150255"><img src="/icons/navigation/rss.gif" alt="WTSI RSS feed" title="WTSI RSS feed" /></a>

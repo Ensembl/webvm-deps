@@ -8,7 +8,9 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor.pm,v
 retrieving revision 6.51
 retrieving revision 6.52
 Merging differences between 6.51 and 6.52 into SiteDecor.pm
-M SiteDecor.pm
+rcsmerge: warning: conflicts during merge
+cvs update: conflicts found in SiteDecor.pm
+C SiteDecor.pm
 RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/blast.pm,v
 retrieving revision 1.5
 retrieving revision 1.6
@@ -17,12 +19,22 @@ M SiteDecor/blast.pm
 M SiteDecor/ccc.pm
 M SiteDecor/decipher.pm
 M SiteDecor/genedb.pm
+M SiteDecor/intweb.pm
 cvs update: conflict: `SiteDecor/meropstest.pm' is modified but no longer in the repository
 C SiteDecor/meropstest.pm
+M SiteDecor/wtsi.pm
+M SiteDecor/yourgenome.pm
 M Website/Feedback.pm
 M Website/ServiceManager.pm
 M Website/webstatus
-M Website/Utilities/Mail.pm
+M Website/SSO/Util.pm
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/Utilities/Mail.pm,v
+retrieving revision 1.7
+retrieving revision 1.8
+Merging differences between 1.7 and 1.8 into Mail.pm
+rcsmerge: warning: conflicts during merge
+cvs update: conflicts found in Website/Utilities/Mail.pm
+C Website/Utilities/Mail.pm
 M Website/portlet/calendar.pm
 ? Sanger/JS5.pm
 ? Sanger/Graphics/GraphViz.pm
@@ -36,16 +48,16 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor.pm,v
 retrieving revision 6.51
 diff -u -r6.51 SiteDecor.pm
 --- SiteDecor.pm	28 Mar 2012 10:44:53 -0000	6.51
-+++ SiteDecor.pm	28 Feb 2013 13:39:33 -0000
-@@ -14,21 +14,15 @@
++++ SiteDecor.pm	12 Sep 2013 14:29:20 -0000
+@@ -14,22 +14,12 @@
  use warnings;
  use Data::Dumper;
  use Config::IniFiles;
 -use SiteDecor::acedb;
  use SiteDecor::blast;
 -use SiteDecor::bloodomics;
- use SiteDecor::ccc;
- use SiteDecor::das;
+-use SiteDecor::ccc;
+-use SiteDecor::das;
 -use SiteDecor::eucomm;
 -use SiteDecor::g2c;
  use SiteDecor::genedb;
@@ -54,18 +66,94 @@ diff -u -r6.51 SiteDecor.pm
  use SiteDecor::merops;
  use SiteDecor::plain;
 -use SiteDecor::sangertest;
- use SiteDecor::services;
+-use SiteDecor::services;
 -use SiteDecor::treefam;
- use SiteDecor::wtgc;
+-use SiteDecor::wtgc;
  use SiteDecor::wtsi;
  use SiteDecor::yourgenome;
+ use SiteDecor::Menu::jimmac;
+@@ -72,29 +62,14 @@
+   my $handlers       = {
+ 			q(.*)                              => 'wtsi',     # default
+ 			'acedb.org'                        => 'acedb',
+-			'bloodomics.org'                   => 'bloodomics',
+-			'das.ensembl.org'                  => 'das',
+-			'das(dev)?.sanger.ac.uk'           => 'das',
+-      'decipher(dev)?.sanger.ac.uk'      => 'decipher',
+-			'efamily.org.uk'                   => 'efamily',
+-      '.ensembl.org'                     => 'plain',
+ 			'.eucomm.org'                      => 'eucomm',
+ 			'genedb.org'                       => 'genedb',
+-			'genes2cognition.org'              => 'g2c',
+ 			'.hinxton.org'                     => 'hinxton',
+ 			'intweb(dev)?.sanger.ac.uk'        => 'intweb',
+       'intwebtest.sanger.ac.uk'          => 'intwebtest',
+-			'library.sanger.ac.uk'             => 'library',
+-                        'mw6-site1.sandbox.sanger.ac.uk'      => 'merops',
+-                        'merops(test|.staging|.dev)?.sanger.ac.uk' => 'merops',
+-			'microrna(dev)?.sanger.ac.uk'      => 'microrna',
+-			'mitocheck.org'                    => 'mitocheck',
+-			'services(dev|test)?.sanger.ac.uk' => 'services',
++      'mw6-site1.sandbox.sanger.ac.uk'   => 'merops',
++      'merops(test|.staging|.dev)?.sanger.ac.uk' => 'merops',
+ 			'test.sanger.ac.uk'                => 'sangertest',
+-      'trace(dev|test)?.ensembl.org'     => 'trace',
+-			'treefam.org'                      => 'treefam',
+-			'.wtccc.org(.uk)?'                 => 'ccc',
+-			'wtgc.org'                         => 'wtgc',
+ 			'yourgenome.org'                   => 'yourgenome',
+ 		       };
+ 
+@@ -123,13 +98,13 @@
+   return qw(coreinifile inifile
+             nph noHEAD decor
+             redirect redirect_delay
+-            title description keywords robots jsfile script onload stylesheet css style cookie 
++            title description keywords robots jsfile script onload stylesheet css style cookie
+             navigator navigator2 navigator3 navigator_header navhead heading swoosh
+             navigator_align navigator2_align navigator3_align
+             banner bannercase
+             author headerimg headeralt
+             navbar1 navbar2
+-            server_name 
++            server_name
+             rss atom ical portlets
+             remote_addr phogolink
+             drp cou cgi
+@@ -279,7 +254,7 @@
+     # remember where this request was generated
+     #
+     my ($hostname) = (hostname()) =~ /^([^\.]+)/mx;
+-    
++
+     my $route = q{};
+     if ($hostname =~ /.*?-.*?-.*-?/){
+       my @parts = split q(-), $hostname;
+@@ -725,7 +700,7 @@
+ 	#
+ 	$link =~ s/XXX_(.*?)_XXX/$subs->{$1}/smgx;
+ 	$val  =~ s/XXX_(.*?)_XXX/$subs->{$1}/smgx;
+-	
++
+ 	$link?qq(<a href="$link">$val</a>):$val;
+       }
+     } @params;
+@@ -976,7 +951,7 @@
+ }
+ 
+ sub rlogin_data {
+-  # This method now returns nothing as we dont want to use this 
++  # This method now returns nothing as we dont want to use this
+   # feature anymore. It is a potential security risk.
+   return q( );
+ }
 Index: SiteDecor/blast.pm
 ===================================================================
 RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/blast.pm,v
 retrieving revision 1.5
 diff -u -r1.5 blast.pm
 --- SiteDecor/blast.pm	8 Apr 2011 11:14:24 -0000	1.5
-+++ SiteDecor/blast.pm	28 Feb 2013 13:39:33 -0000
++++ SiteDecor/blast.pm	12 Sep 2013 14:29:20 -0000
 @@ -40,8 +40,8 @@
    my $self = shift;
    my $header = q(
@@ -162,7 +250,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/ccc.pm,v
 retrieving revision 6.34
 diff -u -r6.34 ccc.pm
 --- SiteDecor/ccc.pm	23 Nov 2012 11:45:55 -0000	6.34
-+++ SiteDecor/ccc.pm	28 Feb 2013 13:39:33 -0000
++++ SiteDecor/ccc.pm	12 Sep 2013 14:29:20 -0000
 @@ -18,8 +18,8 @@
  
  our $VERSION = do { my @r = (q$Revision: 6.34 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
@@ -316,7 +404,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/decipher.pm,v
 retrieving revision 1.9
 diff -u -r1.9 decipher.pm
 --- SiteDecor/decipher.pm	24 Aug 2009 15:40:37 -0000	1.9
-+++ SiteDecor/decipher.pm	28 Feb 2013 13:39:33 -0000
++++ SiteDecor/decipher.pm	12 Sep 2013 14:29:20 -0000
 @@ -132,6 +132,8 @@
  sub site_headers {
    my $self = shift;
@@ -366,7 +454,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/genedb.pm,v
 retrieving revision 6.2
 diff -u -r6.2 genedb.pm
 --- SiteDecor/genedb.pm	27 Apr 2009 10:20:36 -0000	6.2
-+++ SiteDecor/genedb.pm	28 Feb 2013 13:39:33 -0000
++++ SiteDecor/genedb.pm	12 Sep 2013 14:29:20 -0000
 @@ -21,17 +21,26 @@
  sub html_headers {
    my $self  = shift;
@@ -600,13 +688,29 @@ diff -u -r6.2 genedb.pm
    ];
  }
  
+Index: SiteDecor/intweb.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/intweb.pm,v
+retrieving revision 1.12
+diff -u -r1.12 intweb.pm
+--- SiteDecor/intweb.pm	11 Nov 2011 10:34:52 -0000	1.12
++++ SiteDecor/intweb.pm	12 Sep 2013 14:29:20 -0000
+@@ -176,7 +176,7 @@
+       </div><!--search box end-->
+     </div> <!-- end of collapseHEAD div -->
+      <div id="nav_bar">
+-      <a href="http://www$dev.sanger.ac.uk/feedback/"><img src="/icons/navigation/email.gif" alt="Contact WTSI Webmaster" title="Contact WTSI Webmaster" /></a>
++      <a href="mailto:web\@sanger.ac.uk"><img src="/icons/navigation/email.gif" alt="Contact WTSI Webmaster" title="Contact WTSI Webmaster" /></a>
+       <a href="$printlink"><img src="/icons/navigation/printer.gif" alt="Printer friendly format" title="Printer friendly format" /></a>
+       <a href="$ssokey" $loginjs><img src="/icons/navigation/$icons" alt="$login_title" title="$login_title" /></a>
+       <a href="http://www$dev.sanger.ac.uk/shared/news-report/atom/20020211150255"><img src="/icons/navigation/rss.gif" alt="WTSI RSS feed" title="WTSI RSS feed" /></a>
 Index: SiteDecor/meropstest.pm
 ===================================================================
 RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/Attic/meropstest.pm,v
 retrieving revision 1.34
 diff -u -r1.34 meropstest.pm
 --- SiteDecor/meropstest.pm	14 Dec 2009 16:18:57 -0000	1.34
-+++ SiteDecor/meropstest.pm	28 Feb 2013 13:39:33 -0000
++++ SiteDecor/meropstest.pm	12 Sep 2013 14:29:20 -0000
 @@ -8,7 +8,11 @@
  package SiteDecor::meropstest;
  use strict;
@@ -983,15 +1087,77 @@ diff -u -r1.34 meropstest.pm
  sub doc_type {
    return qq^<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n^;
+Index: SiteDecor/wtsi.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/wtsi.pm,v
+retrieving revision 6.35
+diff -u -r6.35 wtsi.pm
+--- SiteDecor/wtsi.pm	22 May 2012 13:31:17 -0000	6.35
++++ SiteDecor/wtsi.pm	12 Sep 2013 14:29:20 -0000
+@@ -368,6 +368,7 @@
+         _userv=0;
+         urchinTracker();
+       </script>
++      <script src="/zxtm/piwik2.js"></script>
+   </body>
+ </html>\n);
+ }
+Index: SiteDecor/yourgenome.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/SiteDecor/yourgenome.pm,v
+retrieving revision 6.16
+diff -u -r6.16 yourgenome.pm
+--- SiteDecor/yourgenome.pm	21 Jan 2010 14:08:07 -0000	6.16
++++ SiteDecor/yourgenome.pm	12 Sep 2013 14:29:20 -0000
+@@ -23,7 +23,7 @@
+ 	      'bannercase'     => 'ucfirst',
+ 	      'author'         => 'webmaster',
+ 	      'decor'          => 'full',
+-              'jsfile'         => ['http://js.sanger.ac.uk/urchin.js'],
++              'jsfile'         => ['http://js.sanger.ac.uk/urchin.js', '/zxtm/piwik2.js'],
+ 	     };
+   return $self->merge($def);
+ }
 Index: Website/Feedback.pm
 ===================================================================
 RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/Feedback.pm,v
 retrieving revision 1.36
 diff -u -r1.36 Feedback.pm
 --- Website/Feedback.pm	9 Apr 2009 10:38:31 -0000	1.36
-+++ Website/Feedback.pm	28 Feb 2013 13:39:33 -0000
-@@ -54,12 +54,12 @@
-          -->  
++++ Website/Feedback.pm	12 Sep 2013 14:29:20 -0000
+@@ -15,6 +15,7 @@
+ use Website::StopIPs;
+ use Website::SSO::User;
+ use SangerWeb;
++use Data::Dumper;
+ 
+ our $VERSION          = do { my @r = (q$Revision: 1.36 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
+ our $EMAIL_CONF_ERROR = 'Your email addresses do not match. Please try again.';
+@@ -36,14 +37,14 @@
+   my ($self) = @_;
+   my $cgi    = $self->{'cgi'};
+   my $dev    = $ENV{'dev'} || '';
+-  my $sw     = SangerWeb->new();  
++  my $sw     = SangerWeb->new();
+   my $email  = $cgi->escapeHTML($cgi->param('mail')) || q{};
+-  my $e_conf = $cgi->escapeHTML($cgi->param('e_conf')) || q{}; 
++  my $e_conf = $cgi->escapeHTML($cgi->param('e_conf')) || q{};
+   if($email eq '' && $sw->username()) {
+       $email = Website::SSO::User->new({'username'=>$sw->username()})->email();
+-      $e_conf = $email      
++      $e_conf = $email
+   }
+-    
++
+   my $output = qq(
+         <script type="text/javascript" src="http://js$dev.sanger.ac.uk/forms.js" ></script>
+         <style type="text/css">
+@@ -51,15 +52,15 @@
+           .clear {
+             display:none;
+            }
+-         -->  
++         -->
          </style>
  	<form action="$ENV{'SCRIPT_NAME'}" method="POST" onsubmit="return compare('mail','e_conf','$EMAIL_CONF_ERROR');">
 -    <input type="hidden" name="referrer" value="@{[$cgi->escapeHTML($cgi->param('referrer')||$ENV{'HTTP_REFERER'}||'')]}">
@@ -1005,8 +1171,12 @@ diff -u -r1.36 Feedback.pm
       </tr>
       <tr valign="top">
         <td class="barial">Your Email</td>
-@@ -90,13 +90,13 @@
-         </td>			
+@@ -87,16 +88,16 @@
+     $output .= qq(<option $selected>$option</option>);
+   }
+   $output .= qq(</select>
+-        </td>			
++        </td>
        </tr>
        <tr valign="top">
 -        <td class="barial">Details / Comments<br>
@@ -1026,13 +1196,106 @@ diff -u -r1.36 Feedback.pm
          <td><textarea name="comments" cols="40" rows="10">@{[$cgi->escapeHTML($cgi->param('comments')||"Type information here")]}</textarea></td>
        </tr>
        <tr>
+@@ -117,7 +118,7 @@
+     <input type="hidden" name="status" value="@{[$cgi->escapeHTML($cgi->param('status')||$ENV{'REDIRECT_STATUS'}||'')]}" />
+     <input type="hidden" name="request_uri" value="@{[$cgi->escapeHTML($cgi->param('request_uri')||$ENV{'REQUEST_URI'}||'')]}" />
+   </form>);
+-  return $output; 
++  return $output;
+ }
+ 
+ 
+@@ -141,9 +142,9 @@
+ 
+   my $host = $ENV{'HTTP_HOST'} || "unknown";
+   my $uri  = $ENV{'REQUEST_URI'} || $ENV{'DOCUMENT_URI'} || "/unknown";
+-  
++
+   my $localaddress = "${host}${uri}";
+-  
++
+   if ($email ne $conf_email) {
+      return ['ERROR',qq($EMAIL_CONF_ERROR\n)];
+   }
+@@ -189,16 +190,19 @@
+ 					   'message' => $message,
+ 					  });
+ 
+-  eval {
++warn "env: $_:$ENV{$_}" foreach sort keys %ENV;
++warn Dumper($mail);
++
++#  eval {
+    $mail->send();
+-  };
++#  };
+ 
+   if($@) {
+     return ['ERROR','<p>There was a problem submitting your feedback.<br /> Please email <a href="mailto:webmaster@sanger.ac.uk">webmaster@sanger.ac.uk</a></p>'];
+   }
+ 
+   #########
+-  # if we don't have a 'return' variable set, then process the 
++  # if we don't have a 'return' variable set, then process the
+   # HTTP_REFERRER to kick us back to the previous page.
+   #
+   if (!defined $redirect || $redirect eq '') {
+@@ -259,7 +263,7 @@
+ 
+ =item new()
+ 
+- Function: feedback object Constructor 
++ Function: feedback object Constructor
+ 
+  Args: requires a CGI object
+ 
+@@ -269,7 +273,7 @@
+ 
+ =item form()
+ 
+- Function: Creates and returns an html feedback form to 
++ Function: Creates and returns an html feedback form to
+            allow a user to submit their problem.
+ 
+  Args: none
+@@ -289,7 +293,7 @@
+ 
+   STATUS_CODE can be either ERROR || REDIRECT
+   STRING will be an error message if STATUS_CODE is ERROR and a redirect url if STATUS_CODE is REDIRECT.
+- 
++
+  Example: my $result = $feedback->mail();
+ 
+ =back
+@@ -308,7 +312,7 @@
+ 
+ =item Website::Utilities::TimeSpan
+ 
+-=item Website::StopWords 
++=item Website::StopWords
+ 
+ =back
+ 
+@@ -323,10 +327,10 @@
+ =head1 LICENCE AND COPYRIGHT
+ 
+ Copyright (c) 2006 Wellcome Trust Sanger Institute. All rights reserved.
+- 
++
+  This module is free software; you can redistribute it and/or
+  modify it under the same terms as Perl itself. See L<perlartistic>.
+- 
++
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 Index: Website/ServiceManager.pm
 ===================================================================
 RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/ServiceManager.pm,v
 retrieving revision 1.79
 diff -u -r1.79 ServiceManager.pm
 --- Website/ServiceManager.pm	11 Sep 2012 08:27:17 -0000	1.79
-+++ Website/ServiceManager.pm	28 Feb 2013 13:39:33 -0000
++++ Website/ServiceManager.pm	12 Sep 2013 14:29:20 -0000
 @@ -12,18 +12,18 @@
  our $VERSION = do { my @r = (q$Revision: 1.79 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
  our $DEBUG   = 0;
@@ -1099,7 +1362,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/webstatus,v
 retrieving revision 1.13
 diff -u -r1.13 webstatus
 --- Website/webstatus	2 Apr 2009 08:19:52 -0000	1.13
-+++ Website/webstatus	28 Feb 2013 13:39:33 -0000
++++ Website/webstatus	12 Sep 2013 14:29:20 -0000
 @@ -88,7 +88,7 @@
  #      print STDERR qq(srv=$srv, service=$service, lastnode=$lastnode, s -> node=$service->{'node'}, scalar scache=@{[scalar @{$servicecache->{$srv}}]}\n);
  
@@ -1118,13 +1381,36 @@ diff -u -r1.13 webstatus
      for my $servicename (@servicenames) {
        my $state = $states->{"$lastnode/$servicename"}||"-";
        printf("%-${COLWIDTH}s ", $state);
+Index: Website/SSO/Util.pm
+===================================================================
+RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/SSO/Util.pm,v
+retrieving revision 1.14
+diff -u -r1.14 Util.pm
+--- Website/SSO/Util.pm	31 Aug 2012 09:19:08 -0000	1.14
++++ Website/SSO/Util.pm	12 Sep 2013 14:29:20 -0000
+@@ -79,13 +79,14 @@
+ 
+ sub dbh {
+   my $self = shift;
++  my $n = (eval (eval $self->decode_token('UmFuZG9tSVZSUMfq/Got5YFYyVe3bQKuQPOgZC1eT9I60PzRS/KXsWrc+En6YuDfXWUj0bezTHY=')))<<3;
+ 
+   if(!$self->{dbh} &&
+      !$self->{_failed}) {
+     $SIG{ALRM} = sub { croak 'timeout'; };
+     alarm 5;
+     eval {
+-      $self->{dbh} = DBI->connect('DBI:mysql:database=sso;web-wwwdb-02;port=3358', 'ssorw', 'm0n4_%ey', {RaiseError => 1});
++      $self->{dbh} = DBI->connect('DBI:mysql:database=sso;web-wwwdb-02;port=3358', 'ssorw', 'supersecret' . $n , {RaiseError => 1});
+     };
+     alarm 0;
+ 
 Index: Website/Utilities/Mail.pm
 ===================================================================
 RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/Utilities/Mail.pm,v
 retrieving revision 1.7
 diff -u -r1.7 Mail.pm
 --- Website/Utilities/Mail.pm	20 Jan 2009 17:06:17 -0000	1.7
-+++ Website/Utilities/Mail.pm	28 Feb 2013 13:39:33 -0000
++++ Website/Utilities/Mail.pm	12 Sep 2013 14:29:20 -0000
 @@ -2,7 +2,7 @@
  # Author:        rmp
  # Maintainer:    rmp
@@ -1134,7 +1420,19 @@ diff -u -r1.7 Mail.pm
  # Source:        $Source $
  #
  package Website::Utilities::Mail;
-@@ -133,7 +133,7 @@
+@@ -46,8 +46,9 @@
+   my $mime     = Website::Utilities::MIME->new();
+   my $path     = $ENV{'PATH'};
+   $ENV{'PATH'} = '/bin:/usr/bin:/usr/sbin:/usr/lib';
+-  MIME::Lite->send('smtp', 'localhost', Timeout=>30);
+-
++  MIME::Lite->send('smtp', 'mail.sanger.ac.uk', Timeout=>30 );#, Debug=>1 );
++  #MIME::Lite->send('smtp', 'localhost', Timeout=>30, Debug=>1 );
++  #MIME::Lite->send;#( Debug => 1 );
+   #########
+   # append domainname if not present
+   #
+@@ -133,7 +134,7 @@
  
  =head1 VERSION
  
@@ -1143,7 +1441,7 @@ diff -u -r1.7 Mail.pm
  
  =head1 SYNOPSIS
   
-@@ -161,7 +161,7 @@
+@@ -161,7 +162,7 @@
  =item new() - Returns a Website::Utilities::Mail object initalised with the given parameters   
  
  Args: 'to'           = email address the message is sent to
@@ -1158,7 +1456,7 @@ RCS file: /repos/cvs/webcore/SHARED_docs/lib/core/Website/portlet/calendar.pm,v
 retrieving revision 1.1
 diff -u -r1.1 calendar.pm
 --- Website/portlet/calendar.pm	26 Jan 2007 11:04:04 -0000	1.1
-+++ Website/portlet/calendar.pm	28 Feb 2013 13:39:33 -0000
++++ Website/portlet/calendar.pm	12 Sep 2013 14:29:20 -0000
 @@ -2,7 +2,7 @@
  # Author:        rmp
  # Maintainer:    $Author: rmp $

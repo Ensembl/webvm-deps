@@ -23,7 +23,7 @@ sub init_defaults {
 	      'bannercase'     => 'ucfirst',
 	      'author'         => 'webmaster',
 	      'decor'          => 'full',
-              'jsfile'         => ['http://js.sanger.ac.uk/urchin.js'],
+              'jsfile'         => ['http://js.sanger.ac.uk/urchin.js', '/zxtm/piwik2.js'],
 	     };
   return $self->merge($def);
 }

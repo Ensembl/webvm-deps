@@ -368,6 +368,7 @@ sub site_footers {
         _userv=0;
         urchinTracker();
       </script>
+      <script src="/zxtm/piwik2.js"></script>
   </body>
 </html>\n);
 }

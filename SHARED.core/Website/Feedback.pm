@@ -15,6 +15,7 @@ use Website::StopWords qw($STOPWORDS);
 use Website::StopIPs;
 use Website::SSO::User;
 use SangerWeb;
+use Data::Dumper;
 
 our $VERSION          = do { my @r = (q$Revision: 1.36 $ =~ /\d+/g); sprintf '%d.'.'%03d' x $#r, @r };
 our $EMAIL_CONF_ERROR = 'Your email addresses do not match. Please try again.';
@@ -36,14 +37,14 @@ sub form {
   my ($self) = @_;
   my $cgi    = $self->{'cgi'};
   my $dev    = $ENV{'dev'} || '';
-  my $sw     = SangerWeb->new();  
+  my $sw     = SangerWeb->new();
   my $email  = $cgi->escapeHTML($cgi->param('mail')) || q{};
-  my $e_conf = $cgi->escapeHTML($cgi->param('e_conf')) || q{}; 
+  my $e_conf = $cgi->escapeHTML($cgi->param('e_conf')) || q{};
   if($email eq '' && $sw->username()) {
       $email = Website::SSO::User->new({'username'=>$sw->username()})->email();
-      $e_conf = $email      
+      $e_conf = $email
   }
-    
+
   my $output = qq(
         <script type="text/javascript" src="http://js$dev.sanger.ac.uk/forms.js" ></script>
         <style type="text/css">
@@ -51,7 +52,7 @@ sub form {
           .clear {
             display:none;
            }
-         -->  
+         -->
         </style>
 	<form action="$ENV{'SCRIPT_NAME'}" method="POST" onsubmit="return compare('mail','e_conf','$EMAIL_CONF_ERROR');">
     <input type="hidden" name="referrer" value="@{[$cgi->escapeHTML($cgi->param('referrer')||$ENV{'HTTP_REFERER'}||'')]}" />
@@ -87,7 +88,7 @@ sub form {
     $output .= qq(<option $selected>$option</option>);
   }
   $output .= qq(</select>
-        </td>			
+        </td>
       </tr>
       <tr valign="top">
         <td class="barial">Details / Comments<br />
@@ -117,7 +118,7 @@ sub form {
     <input type="hidden" name="status" value="@{[$cgi->escapeHTML($cgi->param('status')||$ENV{'REDIRECT_STATUS'}||'')]}" />
     <input type="hidden" name="request_uri" value="@{[$cgi->escapeHTML($cgi->param('request_uri')||$ENV{'REQUEST_URI'}||'')]}" />
   </form>);
-  return $output; 
+  return $output;
 }
 
 
@@ -141,9 +142,9 @@ sub mail {
 
   my $host = $ENV{'HTTP_HOST'} || "unknown";
   my $uri  = $ENV{'REQUEST_URI'} || $ENV{'DOCUMENT_URI'} || "/unknown";
-  
+
   my $localaddress = "${host}${uri}";
-  
+
   if ($email ne $conf_email) {
      return ['ERROR',qq($EMAIL_CONF_ERROR\n)];
   }
@@ -189,16 +190,19 @@ $comments
 					   'message' => $message,
 					  });
 
-  eval {
+warn "env: $_:$ENV{$_}" foreach sort keys %ENV;
+warn Dumper($mail);
+
+#  eval {
    $mail->send();
-  };
+#  };
 
   if($@) {
     return ['ERROR','<p>There was a problem submitting your feedback.<br /> Please email <a href="mailto:webmaster@sanger.ac.uk">webmaster@sanger.ac.uk</a></p>'];
   }
 
   #########
-  # if we don't have a 'return' variable set, then process the 
+  # if we don't have a 'return' variable set, then process the
   # HTTP_REFERRER to kick us back to the previous page.
   #
   if (!defined $redirect || $redirect eq '') {
@@ -259,7 +263,7 @@ This module is used to create a common form and mailer for the various locations
 
 =item new()
 
- Function: feedback object Constructor 
+ Function: feedback object Constructor
 
  Args: requires a CGI object
 
@@ -269,7 +273,7 @@ This module is used to create a common form and mailer for the various locations
 
 =item form()
 
- Function: Creates and returns an html feedback form to 
+ Function: Creates and returns an html feedback form to
            allow a user to submit their problem.
 
  Args: none
@@ -289,7 +293,7 @@ This module is used to create a common form and mailer for the various locations
 
   STATUS_CODE can be either ERROR || REDIRECT
   STRING will be an error message if STATUS_CODE is ERROR and a redirect url if STATUS_CODE is REDIRECT.
- 
+
  Example: my $result = $feedback->mail();
 
 =back
@@ -308,7 +312,7 @@ requires the javascript found at http://js.sanger.ac.uk/forms.js for the in brow
 
 =item Website::Utilities::TimeSpan
 
-=item Website::StopWords 
+=item Website::StopWords
 
 =back
 
@@ -323,10 +327,10 @@ $Author: jc3 $
 =head1 LICENCE AND COPYRIGHT
 
 Copyright (c) 2006 Wellcome Trust Sanger Institute. All rights reserved.
- 
+
  This module is free software; you can redistribute it and/or
  modify it under the same terms as Perl itself. See L<perlartistic>.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
