@@ -32,7 +32,7 @@ if [ -z "$DRY" ]; then
 # tidier, but will make churn on the rsync
 
     git add -A $SHARED $SHARED_DIFF
-    git commit -m "$( basename $0 ): update"
+    git commit -m "ran $( basename $0 ): update"
 fi
 
 echo Done.

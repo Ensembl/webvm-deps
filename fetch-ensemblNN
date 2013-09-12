@@ -22,7 +22,8 @@ git diff --cached --quiet --exit-code && git diff --quiet --exit-code || {
 }
 
 
-rm -rf branch-ensembl-$VSN
+[ -d ensembl-branch-$VSN ] || existed=creat
+rm -rf ensembl-branch-$VSN
 
 cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
     -r branch-ensembl-$VSN \
@@ -32,4 +33,4 @@ cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
 find ensembl-branch-$VSN -type d -name CVS -print0 | xargs -r0 rm -rf
 
 git add -A ensembl-branch-$VSN
-git commit -m "$( basename $0 ) $VSN"
+git commit -m "ran $( basename $0 ) - ${existed:-updat}ed $VSN"
