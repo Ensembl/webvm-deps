@@ -14,4 +14,4 @@ cvs -q -d :ext:cvs.internal.sanger.ac.uk:/repos/cvs/anacode co \
 find humpub -type d -name CVS -print0 | xargs -r0 rm -rf
 
 git add -A humpub
-git commit -m "$( basename $0 ) $VSN"
+git commit -m "ran $( basename $0 )"
