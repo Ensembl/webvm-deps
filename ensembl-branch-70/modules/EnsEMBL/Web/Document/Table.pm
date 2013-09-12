@@ -1,4 +1,4 @@
-# $Id: Table.pm,v 1.23 2012-12-12 13:23:31 ds23 Exp $
+# $Id: Table.pm,v 1.23.2.2 2013-03-21 12:06:05 www-ens Exp $
 
 package EnsEMBL::Web::Document::Table;
 
@@ -291,7 +291,7 @@ sub data_table_config {
   my %columns      = map { $_->{'key'} => $i++ } @{$self->{'columns'}};
   my $session_data = $self->session ? $self->session->get_data(type => 'data_table', code => $code) : {};
   my $sorting      = $session_data->{'sorting'} ?        from_json($session_data->{'sorting'})        : $self->{'options'}->{'sorting'} || [];
-  my $hidden       = $session_data->{'hidden_columns'} ? from_json($session_data->{'hidden_columns'}) : [];
+  my $hidden       = $session_data->{'hidden_columns'} ? from_json($session_data->{'hidden_columns'}) : $self->{'options'}->{'hidden_columns'} || [];
   my $config       = qq{<input type="hidden" name="code" value="$code" />};
   my $sort         = [];
   
@@ -322,7 +322,7 @@ sub data_table_config {
   }
   
   $config .= sprintf(qq{<input type="hidden" name='expopts' value='%s' />},$self->export_options);
- 
+
   return qq{<form class="data_table_config" action="#">$config</form>};
 }
 

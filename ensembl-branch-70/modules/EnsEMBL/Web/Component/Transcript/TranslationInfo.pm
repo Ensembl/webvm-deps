@@ -1,4 +1,4 @@
-# $Id: TranslationInfo.pm,v 1.2 2012-07-19 09:26:09 hr5 Exp $
+# $Id: TranslationInfo.pm,v 1.2.10.1 2013-02-26 10:45:11 st3 Exp $
 
 package EnsEMBL::Web::Component::Transcript::TranslationInfo;
 
@@ -19,7 +19,7 @@ sub content {
   my $transcript   = $object->Obj;
   my $translation  = $transcript->translation;
 
-  $table->add_row('Ensembl version', $translation->stable_id.'.'.$translation->version);
+  $table->add_row($self->object->species_defs->ENSEMBL_SITETYPE . ' version', $translation->stable_id.'.'.$translation->version);
 
   return $table->render;
 }

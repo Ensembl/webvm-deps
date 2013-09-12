@@ -1,4 +1,4 @@
-# $Id: ImageConfig.pm,v 1.382.2.11 2013-01-15 11:40:58 sb23 Exp $
+# $Id: ImageConfig.pm,v 1.382.2.14 2013-03-15 16:31:20 wm2 Exp $
 
 package EnsEMBL::Web::ImageConfig;
 
@@ -85,14 +85,15 @@ sub new {
 }
 
 sub initialize {
-  my $self    = shift;
-  my $class   = ref $self;
-  my $species = $self->species;
-  my $code    = $self->code;
-  my $cache   = $self->hub->cache;
+  my $self      = shift;
+  my $class     = ref $self;
+  my $species   = $self->species;
+  my $code      = $self->code;
+  my $cache     = $self->hub->cache;
+  my $cache_key = $self->cache_key;
   
   # Check memcached for defaults
-  if (my $defaults = $cache ? $cache->get("::${class}::${species}::$code") : undef) {
+  if (my $defaults = $cache && $cache_key ? $cache->get($cache_key) : undef) {
     my $user_data = $self->{'_tree'}->user_data;
     $self->{$_} = $defaults->{$_} for keys %$defaults;
     $self->tree->push_user_data_through_tree($user_data);
@@ -101,7 +102,7 @@ sub initialize {
     $self->init;
     $self->modify;
     
-    if ($cache) {
+    if ($cache && $cache_key) {
       $self->tree->hide_user_data;
       my $defaults = {
         _tree       => $self->{'_tree'},
@@ -109,7 +110,7 @@ sub initialize {
         extra_menus => $self->{'extra_menus'},
       };
       
-      $cache->set("::${class}::${species}::$code", $defaults, undef, 'IMAGE_CONFIG', $species);
+      $cache->set($cache_key, $defaults, undef, 'IMAGE_CONFIG', $species);
       $self->tree->reveal_user_data;
     }
   }
@@ -223,6 +224,7 @@ sub transform           { return $_[0]->{'transform'};                          
 sub tree                { return $_[0]->{'_tree'};                                             }
 sub species             { return $_[0]->{'species'};                                           }
 sub multi_species       { return 0;                                                            }
+sub cache_key           { return join '::', '', ref $_[0], $_[0]->species, $_[0]->code;        }
 sub bgcolor             { return $_[0]->get_parameter('bgcolor') || 'background1';             }
 sub bgcolour            { return $_[0]->bgcolor;                                               }
 sub get_node            { return shift->tree->get_node(@_);                                    }
@@ -528,7 +530,9 @@ sub load_user_tracks {
   my (%url_sources, %upload_sources);
   
   foreach my $source (sort { ($a->caption || $a->label) cmp ($b->caption || $b->label) } values %$das) {
-    next if     $self->get_node('das_' . $source->logic_name);
+    my $node = $self->get_node('das_' . $source->logic_name);
+    
+    next if     $node && $node->get('node_type') eq 'track';
     next unless $source->is_on($self->{'type'});
     
     $self->add_das_tracks('user_data', $source);
@@ -2685,7 +2689,7 @@ sub add_sequence_variations {
     display    => 'off',
   };
   
-  if ($hashref->{'menu'}) {
+  if (defined($hashref->{'menu'}) && scalar @{$hashref->{'menu'}}) {
     $self->add_sequence_variations_meta($key, $hashref, $options);
   } else {
     $self->add_sequence_variations_default($key, $hashref, $options);

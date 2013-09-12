@@ -1,4 +1,4 @@
-# $Id: Vertical.pm,v 1.13 2012-11-07 11:00:34 sb23 Exp $
+# $Id: Vertical.pm,v 1.15 2013-03-01 09:56:11 sb23 Exp $
 
 package EnsEMBL::Web::ImageConfig::Vertical;
 
@@ -23,9 +23,28 @@ sub load_user_tracks {
   
   $self->SUPER::load_user_tracks($session);
   
-  my $width          = $self->get_parameter('all_chromosomes') eq 'yes' ? 10 : 60;
-  my %remote_formats = map { lc $_ => 1 } @{$self->hub->species_defs->USERDATA_REMOTE_FORMATS};
-  my @renderers      = (
+  my $width              = $self->get_parameter('all_chromosomes') eq 'yes' ? 10 : 60;
+  my %remote_formats     = map { lc $_ => 1 } @{$self->hub->species_defs->USERDATA_REMOTE_FORMATS};
+  my (undef, $renderers) = $self->_user_track_settings;
+  
+  foreach ($menu->nodes) {
+    if ($remote_formats{lc $_->get('format')}
+      || ($_->get('format') eq 'report' || $_->get('name') eq 'Region report')
+      ) {
+      $_->remove;
+    } else {
+      $_->set('renderers', $renderers);
+      $_->set('glyphset',  'Vuserdata');
+      $_->set('colourset', 'densities');
+      $_->set('maxmin',    1);
+      $_->set('width',     $width);
+      $_->set('strand',    'b');
+    }
+  }
+}
+
+sub _user_track_settings {
+  return ('b', [
     'off',                'Off',
     'highlight_lharrow',  'Arrow on lefthand side',
     'highlight_rharrow',  'Arrow on righthand side',
@@ -35,22 +54,7 @@ sub load_user_tracks {
     'density_line',       'Density plot - line graph',
     'density_bar',        'Density plot - filled bar chart',
     'density_outline',    'Density plot - outline bar chart',
-  );
-  
-  foreach ($menu->nodes) {
-    if ($remote_formats{lc $_->get('format')}
-      || ($_->get('format') eq 'report' || $_->get('name') eq 'Region report')
-      ) {
-      $_->remove;
-    } else {
-      $_->set('renderers', \@renderers);
-      $_->set('glyphset',  'Vuserdata');
-      $_->set('colourset', 'densities');
-      $_->set('maxmin',    1);
-      $_->set('width',     $width);
-      $_->set('strand',    'b');
-    }
-  }
+  ]);
 }
 
 sub load_user_track_data {

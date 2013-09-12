@@ -1,4 +1,4 @@
-# $Id: UserData.pm,v 1.122 2012-12-13 15:24:52 wm2 Exp $
+# $Id: UserData.pm,v 1.122.2.1 2013-03-21 13:27:15 wm2 Exp $
 
 package EnsEMBL::Web::Object::UserData;
 
@@ -722,7 +722,7 @@ sub calculate_consequence_data {
           
           # if this is a variation ID or HGVS, we can use VEP.pm method to parse into VFs
           if($f->isa('EnsEMBL::Web::Text::Feature::ID') || $f->isa('EnsEMBL::Web::Text::Feature::VEP_VCF')) {
-            push @vfs, @{parse_line($vep_config, $f->id)};
+            push @vfs, grep {&validate_vf($vep_config, $_)} @{parse_line($vep_config, $f->id)};
             next;
           }
           

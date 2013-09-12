@@ -1,12 +1,12 @@
 =head1 LICENSE
 
- Copyright (c) 1999-2012 The European Bioinformatics Institute and
+ Copyright (c) 1999-2013 The European Bioinformatics Institute and
  Genome Research Limited.  All rights reserved.
 
  This software is distributed under a modified Apache license.
  For license details, please see
 
-   http://www.ensembl.org/info/about/code_licence.html
+   http://www.ensembl.org/info/about/legal/code_licence.html
 
 =head1 CONTACT
 
@@ -1862,6 +1862,24 @@ sub init_line {
         $line->{Extra}->{GMAF} = scalar @gmafs ? join ",", @gmafs : '-';
     }
     
+    # 1KG MAFs?
+    if(defined($config->{maf_1kg}) && defined($vf->{existing}) && scalar @{$vf->{existing}}) {
+        my @pops = qw(AFR AMR ASN EUR);
+        
+        foreach my $var_array(@{$vf->{existing}}) {
+            if(scalar @{$var_array} > 8) {
+                for my $i(0..$#pops) {
+                    my $freq = $var_array->[$i + 8];
+                    $freq = '-' unless defined($freq);
+                    $line->{Extra}->{$pops[$i].'_MAF'} =
+                        exists($line->{Extra}->{$pops[$i].'_MAF'}) ?
+                        $line->{Extra}->{$pops[$i].'_MAF'}.','.$freq :
+                        $freq;
+                }
+            }
+        }
+    }
+    
     # copy entries from base_line
     if(defined($base_line)) {
         $line->{$_} = $base_line->{$_} for keys %$base_line;
@@ -1946,18 +1964,27 @@ sub filter_by_consequence {
     my @cons;
     push @cons, @{$vf->consequence_type($_)} for @types;
     
+    my $method_mod = $vf->isa('Bio::EnsEMBL::Variation::StructuralVariationFeature') ? 'Structural' : '';
+    
     # add regulatory consequences
     if(defined($config->{regulatory})) {
         foreach my $term_type(@types) {
             my $term_method = $term_type.'_term';
             
-            for my $rfv (@{ $vf->get_all_RegulatoryFeatureVariations }) {
-                for my $rfva(@{$rfv->get_all_alternate_RegulatoryFeatureVariationAlleles}) {
+            my $m1 = 'get_all_RegulatoryFeature'.$method_mod.'Variations';
+            my $m2 = 'get_all_RegulatoryFeature'.$method_mod.'VariationAlleles';
+            
+            for my $rfv (@{ $vf->$m1 }) {
+                for my $rfva(@{$rfv->$m2}) {
                     push @cons, map {$_->$term_method} @{ $rfva->get_all_OverlapConsequences };
                 }
-            }   
-            for my $mfv (@{ $vf->get_all_MotifFeatureVariations }) {
-                for my $mfva(@{$mfv->get_all_alternate_MotifFeatureVariationAlleles}) {
+            }
+            
+            $m1 = 'get_all_MotifFeature'.$method_mod.'Variations';
+            $m2 = 'get_all_MotifFeature'.$method_mod.'VariationAlleles';
+            
+            for my $mfv (@{ $vf->$m1 }) {
+                for my $mfva(@{$mfv->$m2}) {
                     push @cons, map {$_->$term_method} @{ $mfva->get_all_OverlapConsequences };
                 }
             }
@@ -1975,7 +2002,9 @@ sub filter_by_consequence {
     
     # check special case, coding
     if(defined($filters->{coding})) {
-        if(grep {$_->affects_cds} @{$vf->get_all_TranscriptVariations}) {
+        my $method = 'get_all_Transcript'.$method_mod.'Variations';
+        
+        if(grep {$_->affects_cds} @{$vf->$method}) {
             if($filters->{coding} == 1) {
                 $yes = 1;
             }
@@ -2958,7 +2987,8 @@ sub regions_from_hash {
             
             foreach my $chunk(keys %{$vf_hash->{$chr}}) {
                 foreach my $pos(keys %{$vf_hash->{$chr}{$chunk}}) {
-                    my ($s, $e) = ($pos - MAX_DISTANCE_FROM_TRANSCRIPT, $pos + MAX_DISTANCE_FROM_TRANSCRIPT);
+                    my @tmp = sort {$a <=> $b} map {($_->{start}, $_->{end})} @{$vf_hash->{$chr}{$chunk}{$pos}};
+                    my ($s, $e) = ($tmp[0] - MAX_DISTANCE_FROM_TRANSCRIPT, $tmp[-1] + MAX_DISTANCE_FROM_TRANSCRIPT);
                     
                     my $low = int ($s / $region_size);
                     my $high = int ($e / $region_size) + 1;
@@ -3899,9 +3929,9 @@ sub cache_reg_feats {
             
             # get sub-slice
             my $sub_slice = $slice->sub_Slice($s, $e);
-            $sub_slice->{coord_system}->{adaptor} = $config->{csa};
-            
             next unless defined($sub_slice);
+            
+            $sub_slice->{coord_system}->{adaptor} = $config->{csa};
             
             foreach my $type(@REG_FEAT_TYPES) {
                 my $features = $config->{$type.'_adaptor'}->fetch_all_by_Slice($sub_slice);
@@ -4132,9 +4162,14 @@ sub cache_custom_annotation {
                 
                 # bigwig needs to use bigWigToWig utility
                 if($custom->{format} eq 'bigwig') {
+                    my @tmp_files;
+                    
+                    die "\nERROR: Could not find temporary directory ".$config->{tmpdir}." - use --tmpdir [dir] to define an existing directory\n" unless -d $config->{tmpdir};
+                    
                     foreach my $region(@tmp_regions) {
                         my ($s, $e) = split /\-/, $region;
                         my $tmp_file = $config->{tmpdir}.'/vep_tmp_'.$$.'_'.$tmp_chr.'_'.$s.'_'.$e;
+                        push @tmp_files, $tmp_file;
                         my $bigwig_file = $custom->{file};
                         my $bigwig_output = `bigWigToWig -chrom=$tmp_chr -start=$s -end=$e $bigwig_file $tmp_file 2>&1`;
                         
@@ -4142,11 +4177,14 @@ sub cache_custom_annotation {
                     }
                     
                     # concatenate all the files together
-                    my $string = $config->{tmpdir}.'/vep_tmp_'.$$.'_*';
+                    my $string = join(" ", @tmp_files);
                     my $tmp_file = $config->{tmpdir}.'/vep_tmp_'.$$;
-                    `cat $string > $tmp_file; rm $string`;
+                    `cat $string > $tmp_file`;
                     open CUSTOM, $tmp_file
                         or die "\nERROR: Could not read from temporary WIG file $tmp_file\n";
+                    
+                    # unlink smaller files
+                    unlink($_) for @tmp_files;
                 }
                 
                 # otherwise use tabix
@@ -4160,6 +4198,9 @@ sub cache_custom_annotation {
                 
                 # set an error flag so we don't have to check every line
                 my $error_flag = 1;
+                
+                # create a hash for storing temporary params (used by bigWig)
+                my %tmp_params = ();
                 
                 while(<CUSTOM>) {
                     chomp;
@@ -4215,12 +4256,41 @@ sub cache_custom_annotation {
                     }
                     
                     elsif($custom->{format} eq 'bigwig') {
-                        $feature = {
-                            chr   => $chr,
-                            start => $data[0],
-                            end   => $data[0],
-                            name  => $data[1],
-                        };
+                        
+                        # header line from wiggle file
+                        if(/^(fixed|variable)Step/) {
+                            my @split = split /\s+/;
+                            $tmp_params{type} = shift @split;
+                            
+                            foreach my $pair(@split) {
+                                my ($key, $value) = split /\=/, $pair;
+                                $tmp_params{$key} = $value;
+                            }
+                            
+                            # default to span of 1
+                            $tmp_params{span} ||= 1;
+                        }
+                        
+                        else {
+                            if($tmp_params{type} eq 'fixedStep') {
+                                $feature = {
+                                    chr   => $chr,
+                                    start => $tmp_params{start},
+                                    end   => ($tmp_params{start} + $tmp_params{span}) - 1,
+                                    name  => $data[0],
+                                };
+                                
+                                $tmp_params{start} += $tmp_params{step};
+                            }
+                            elsif($tmp_params{type} eq 'variableStep') {
+                                $feature = {
+                                    chr   => $chr,
+                                    start => $data[0],
+                                    end   => ($data[0] + $tmp_params{span}) - 1,
+                                    name  => $data[1]
+                                };
+                            }
+                        }
                     }
                     
                     if(defined($feature)) {
@@ -4259,6 +4329,7 @@ sub build_full_cache {
     if($config->{build} =~ /all/i) {
         @slices = @{$config->{sa}->fetch_all('toplevel')};
         push @slices, @{$config->{sa}->fetch_all('lrg', undef, 1, undef, 1)} if defined($config->{lrg});
+        push @slices, grep { $_->assembly_exception_type() =~ /^PATCH/ } @{$config->{sa}->fetch_all('toplevel', undef, 1)};
     }
     else {
         foreach my $val(split /\,/, $config->{build}) {
@@ -4470,6 +4541,7 @@ sub find_existing {
             ORDER BY vf.source_id ASC
         });
         
+        $new_vf->{slice} ||= get_slice($config, $new_vf->{chr});
         $sth->execute($new_vf->slice->get_seq_region_id, $new_vf->start, $new_vf->end);
         
         my @v;

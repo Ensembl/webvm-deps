@@ -1,4 +1,4 @@
-# $Id: Variation.pm,v 1.15 2012-11-26 15:57:08 wm2 Exp $
+# $Id: Variation.pm,v 1.15.2.1 2013-02-15 10:17:38 jk10 Exp $
 
 package EnsEMBL::Web::ZMenu::Variation;
 
@@ -180,7 +180,7 @@ sub content {
   my $allele_list = $feature->get_all_Alleles;
   foreach (@$allele_list) {
     my $pop_obj = $_->population;
-    if ($pop_obj) {
+    if ($pop_obj && $pop_obj->{freqs}) {
       $self->add_entry({
         'label_html' => 'Population genetics',
         'link' => $hub->url({

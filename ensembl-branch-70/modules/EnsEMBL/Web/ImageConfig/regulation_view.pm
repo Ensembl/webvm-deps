@@ -1,4 +1,4 @@
-# $Id: regulation_view.pm,v 1.26 2012-12-12 14:55:16 sb23 Exp $
+# $Id: regulation_view.pm,v 1.27 2013-02-05 15:12:25 sb23 Exp $
 
 package EnsEMBL::Web::ImageConfig::regulation_view;
 
@@ -6,6 +6,7 @@ use strict;
 
 use base qw(EnsEMBL::Web::ImageConfig);
 
+sub cache_key        { return $_[0]->code eq 'cell_line' ? '' : $_[0]->SUPER::cache_key; }
 sub load_user_tracks { return $_[0]->SUPER::load_user_tracks($_[1]) unless $_[0]->code eq 'set_evidence_types'; } # Stops unwanted cache tags being added for the main page (not the component)
 
 sub init {
