@@ -16,7 +16,7 @@ set -x
 set -e
 
 rsync $DRY --delete-excluded --exclude '*~' --exclude '.#*' --exclude '*.swp' \
-    -iSWH -rltgD -E /nfs/WWWdev/SHARED_docs/lib/core/ $SHARED
+    -c -iSWH -rltgD -E /nfs/WWWdev/SHARED_docs/lib/core/ $SHARED
 
 if [ -z "$DRY" ]; then
     (
