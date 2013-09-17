@@ -30,7 +30,7 @@ cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
     -r branch-ensembl-$VSN \
     -d $ENSDIR \
     {ensembl,ensembl-external,ensembl-map,ensembl-compara,ensembl-variation,ensembl-functgenomics}/modules/Bio \
-    {ensembl-webcode,ensembl-draw}/modules/Bio
+    ensembl-draw/modules/Bio
 
 
 find $ENSDIR -type d -name CVS -print0 | xargs -r0 rm -rf
