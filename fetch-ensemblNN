@@ -22,17 +22,18 @@ git diff --cached --quiet --exit-code && git diff --quiet --exit-code || {
 }
 
 
-[ -d ensembl-branch-$VSN ] || existed=creat
-rm -rf ensembl-branch-$VSN
+ENSDIR=ensembl-branch-$VSN
+[ -d $ENSDIR ] || existed=creat
+rm -rf $ENSDIR
 
 cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
     -r branch-ensembl-$VSN \
-    -d ensembl-branch-$VSN \
+    -d $ENSDIR \
     {ensembl,ensembl-external,ensembl-map,ensembl-compara,ensembl-variation,ensembl-functgenomics}/modules/Bio \
     {ensembl-webcode,ensembl-draw}/modules/Bio
 
 
-find ensembl-branch-$VSN -type d -name CVS -print0 | xargs -r0 rm -rf
+find $ENSDIR -type d -name CVS -print0 | xargs -r0 rm -rf
 
-git add -A ensembl-branch-$VSN
+git add -A $ENSDIR
 git commit -m "ran $( basename $0 ) - ${existed:-updat}ed $VSN"
