@@ -1,5 +1,5 @@
 #! /bin/bash
-# For regex match
+# For regex match, {,globs}
 
 VSN=$1
 [[ "$VSN" =~ ^[0-9][0-9][0-9]? ]] || {
@@ -28,7 +28,9 @@ rm -rf ensembl-branch-$VSN
 cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
     -r branch-ensembl-$VSN \
     -d ensembl-branch-$VSN \
-    ensembl-api ensembl-website
+    {ensembl,ensembl-external,ensembl-map,ensembl-compara,ensembl-variation,ensembl-functgenomics}/modules/Bio \
+    {ensembl-webcode,ensembl-draw}/modules/Bio
+
 
 find ensembl-branch-$VSN -type d -name CVS -print0 | xargs -r0 rm -rf
 
