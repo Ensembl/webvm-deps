@@ -1,0 +1,5 @@
+Cut down from https://github.com/Anacode/HTtapTP v0.03
+
+This contains just the Perl libraries, frozen at 0.03
+for use with cgi-bin/selftest/ from each node.
+			-- mca
