@@ -124,9 +124,24 @@ not ok 1 - request type $meth is not accepted\n";
 
 sub _warn {
     my ($self, $letter, $msg) = @_;
+    my @loc = ($letter);
+
+    # https://rt.cpan.org/Ticket/Display.html?id=75390
+    # Workaround just hides that particular noise
+    return if $letter eq 'e' && $msg =~
+      m{^Can't locate Mo/(builder|default)\.pm in \@INC \(.*\) at \(eval \d+\) line 1\.$};
+
+    # explain internal errors which pass through, but don't hide them
+    push @loc, 'internal to test framework' if $letter eq 'e' &&
+      eval { $msg->isa("Test::Builder::Exception") };
+
+    push @loc, 'parsing' if !defined $^S;
+    push @loc, 'in eval' if $^S; # else a bare error
+
     $msg =~ s{\n\z}{};
     $msg =~ s{\n}{\n  | }g;
-    $self->diag("[$letter] $msg");
+    local $" = '; ';
+    $self->diag("[@loc] $msg");
     return;
 }
 
