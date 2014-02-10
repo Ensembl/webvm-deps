@@ -1,6 +1,7 @@
 #! /bin/bash
 # For regex match, {,globs}
 
+set -e
 VSN=$1
 [[ "$VSN" =~ ^[0-9][0-9][0-9]? ]] || {
     echo "Syntax: $0 <nn>
@@ -9,12 +10,19 @@ Create ./ensembl-branch-nn/ from cvs.sanger.ac.uk
 
 REPLACING any existing directory of that name,
 
-stripping the CVS/ directories afterwards,
+stripping the .git/ directories afterwards,
 
 then committing to Git.
 " >&2
     exit 1
 }
+
+# Check that we will party on the directory in the correct place
+[ "$0" = "./fetch-ensemblNN" ] && [ -f "$PWD/fetch-ensemblNN" ] || {
+    echo "$0 aborting: run from webvm-deps/ clone with ./fetch-ensemblNN" >&2
+    exit 3
+}
+ENSDIR="$PWD/ensembl-branch-$VSN"
 
 git diff --cached --quiet --exit-code && git diff --quiet --exit-code || {
     echo "$0 aborting: Working copy is not clean" >&2
@@ -22,17 +30,17 @@ git diff --cached --quiet --exit-code && git diff --quiet --exit-code || {
 }
 
 
-ENSDIR=ensembl-branch-$VSN
+
 [ -d $ENSDIR ] || existed=creat
 rm -rf $ENSDIR
+mkdir $ENSDIR
 
-cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
-    -r branch-ensembl-$VSN \
-    -d $ENSDIR \
-    ensembl{,-external,-map,-compara,-variation,-functgenomics,-draw}/modules/Bio
+echo "== webvm-git fetch ensembl*  (needs standard team-tools PATH)"
+for reponame in ensembl{,-external,-map,-compara,-variation,-functgenomics,-draw}; do
+    echo "=== fetch $reponame";date
+    _anacode_build_lib__ensembl $reponame "$ENSDIR" "$VSN"
+done
 
-
-find $ENSDIR -type d -name CVS -print0 | xargs -r0 rm -rf
-
+echo "== webvm-git add & commit"
 git add -A $ENSDIR
-git commit -m "ran $( basename $0 ) - ${existed:-updat}ed $VSN"
+git commit -q -m "ran $( basename $0 ) - ${existed:-updat}ed $VSN"
