@@ -28,11 +28,12 @@ rm -rf $ENSDIR
 
 cvs -q -d :ext:cvs.sanger.ac.uk:/cvsroot/ensembl co \
     -r branch-ensembl-$VSN \
+    -kk \
     -d $ENSDIR \
-    ensembl{,-external,-map,-compara,-variation,-functgenomics,-draw}/modules/Bio
-
+    ensembl{,-compara,-variation,-functgenomics}/modules/Bio
 
 find $ENSDIR -type d -name CVS -print0 | xargs -r0 rm -rf
+mv -vi $ENSDIR/ensembl-{functgenomics,funcgen}
 
 git add -A $ENSDIR
 git commit -m "ran $( basename $0 ) - ${existed:-updat}ed $VSN"
