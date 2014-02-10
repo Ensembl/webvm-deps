@@ -36,8 +36,8 @@ rm -rf $ENSDIR
 mkdir $ENSDIR
 
 echo "== webvm-git fetch ensembl*  (needs standard team-tools PATH)"
-for reponame in ensembl{,-external,-map,-compara,-variation,-functgenomics,-draw}; do
-    echo "=== fetch $reponame";date
+for reponame in ensembl{,-compara,-variation,-funcgen}; do
+    echo "=== fetch $reponame"
     _anacode_build_lib__ensembl $reponame "$ENSDIR" "$VSN"
 done
 
