@@ -35,11 +35,11 @@ Base class for objects supporting tags / attributes
 
 =head1 MAINTAINER
 
-$Author: mm14 $
+$Author$
 
 =head VERSION
 
-$Revision: 1.14 $
+$Revision$
 
 =head1 APPENDIX
 

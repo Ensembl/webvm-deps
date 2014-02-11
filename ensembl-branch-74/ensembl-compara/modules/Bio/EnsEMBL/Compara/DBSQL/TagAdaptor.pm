@@ -37,11 +37,11 @@ values for tags, but at most one for each attribute.
 
 =head1 MAINTAINER
 
-$Author: mm14 $
+$Author$
 
 =head VERSION
 
-$Revision: 1.20 $
+$Revision$
 
 =head1 APPENDIX
 

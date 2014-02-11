@@ -44,11 +44,11 @@ limitations under the License.
 
 =head1 MAINTAINER
 
-$Author: mm14 $
+$Author$
 
 =head VERSION
 
-$Revision: 1.6 $
+$Revision$
 
 =head1 APPENDIX
 

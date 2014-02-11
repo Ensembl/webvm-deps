@@ -39,11 +39,11 @@ Ensembl Team. Individual contributions can be found in the CVS log.
 
 =head1 MAINTAINER
 
-$Author: mm14 $
+$Author$
 
 =head VERSION
 
-$Revision: 1.20.2.1 $
+$Revision$
 
 =head1 APPENDIX
 

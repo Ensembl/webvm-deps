@@ -47,11 +47,11 @@ Ensembl Team. Individual contributions can be found in the CVS log.
 
 =head1 MAINTAINER
 
-$Author: mm14 $
+$Author$
 
 =head1 VERSION
 
-$Revision: 1.42.2.1 $
+$Revision$
 
 =head1 APPENDIX
 
@@ -216,6 +216,23 @@ sub gene_align_id {
     return $self->{'_gene_align_id'};
 }
 
+
+=head2
+
+  Description : Getter for the species-tree this gene tree is reconciled with
+  Returntype  : Bio::EnsEMBL::Compara::SpeciesTree
+  Example     : my $species_tree = $gene_tree->species_tree;
+  Caller      : General
+
+=cut
+
+sub species_tree {
+    my $self = shift;
+    if (not defined $self->{_species_tree} and defined $self->adaptor) {
+        $self->{_species_tree} = $self->adaptor->db->get_SpeciesTreeAdaptor->fetch_by_method_link_species_set_id_label($self->method_link_species_set_id, 'default');
+    }
+    return $self->{_species_tree};
+}
 
 
 ################
