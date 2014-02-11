@@ -34,7 +34,7 @@ Bio::EnsEMBL::Utils::CliHelper
 
 =head1 VERSION
 
-$Revision: 1.12 $
+$Revision$
 
 =head1 SYNOPSIS
 

@@ -53,11 +53,11 @@ Andy Yates
 
 =head1 MAINTANER
 
-$Author: mm14 $
+$Author$
 
 =head1 VERSION
 
-$Revision: 1.18 $
+$Revision$
 
 =head1 APPENDIX
 

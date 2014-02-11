@@ -1,7 +1,7 @@
 # This is an adapted  version of Algorithm::Diff. 
 # The original is committed at Algorithm::DiffOld.
 # Adaptations by Anton Enright, @ ebi.ac.uk
-# $Id: AlgorithmDiff.pm,v 1.1 2012-11-16 16:09:02 lg4 Exp $
+# $Id$
 #
 
 package Bio::EnsEMBL::Compara::Production::AlgorithmDiff;
@@ -13,7 +13,7 @@ require Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw();
 @EXPORT_OK = qw(LCS diff traverse_sequences);
-$VERSION = sprintf('%d.%02d', (q$Revision: 1.1 $ =~ /\d+/g));
+$VERSION = sprintf('%d.%02d', (q$Revision$ =~ /\d+/g));
 
 # McIlroy-Hunt diff algorithm
 # Adapted from the Smalltalk code of Mario I. Wolczko, <mario@wolczko.com>

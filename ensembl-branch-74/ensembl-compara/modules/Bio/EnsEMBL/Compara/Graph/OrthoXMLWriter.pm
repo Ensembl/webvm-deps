@@ -72,11 +72,11 @@ See inline
 
 =head1 MAINTAINER
 
-$Author: mm14 $
+$Author$
 
 =head VERSION
 
-$Revision: 1.18 $
+$Revision$
 
 
 =head1 CONTACT

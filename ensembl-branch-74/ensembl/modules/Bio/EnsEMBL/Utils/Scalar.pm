@@ -100,11 +100,11 @@ See subroutines.
 
 =head1 MAINTAINER
 
-$Author: ady $
+$Author$
 
 =head1 VERSION
 
-$Revision: 1.22 $
+$Revision$
 
 =cut
 

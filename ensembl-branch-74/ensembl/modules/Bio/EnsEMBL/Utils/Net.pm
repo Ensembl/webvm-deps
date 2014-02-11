@@ -59,7 +59,7 @@ See subroutines.
 
 =head1 VERSION
 
-$Revision: 1.2 $
+$Revision$
 
 =cut
 

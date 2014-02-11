@@ -33,7 +33,7 @@ Bio::EnsEMBL::Utils::SqlHelper
 
 =head1 VERSION
 
-$Revision: 1.30 $
+$Revision$
 
 =head1 SYNOPSIS
 
