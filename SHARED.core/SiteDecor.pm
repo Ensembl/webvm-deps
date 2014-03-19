@@ -215,7 +215,7 @@ sub username {
     $self->{'username'} = $arg;
   }
 
-  return lc $self->{'username'} || q();
+  return lc($self->{'username'} || q());
 }
 
 sub init_env {
