@@ -1,0 +1,9 @@
+Ensembl 'ensembl' release/75 from intcvs1:/repos/git/anacode/github-mirror-ro/Anacode/ensembl.git is
+    commit 996b13deeb2eb81c0604e4279e2a3f5c5ed599f7 (HEAD, origin/release/75, _build)
+    Author: Michael Gray <mg13@sanger.ac.uk>
+    Date:   Tue Mar 18 15:55:14 2014 +0000
+    
+        Revert ".travis.yml: get ensembl-test from Anacode for now."
+        
+        This reverts commit c8f82264d13c20951de4342176b7898fd2af0e46.
+        Anacode ensembl-test changes now merged upstream into EnsEMBL.

@@ -1,0 +1,6 @@
+Ensembl 'ensembl-compara' release/75 from https://github.com/Ensembl/ensembl-compara.git is
+    commit 832c3d0170284f240f9a3570683dce41496e1daf (grafted, HEAD, origin/release/75, _build)
+    Author: Matthieu Muffato <muffato@ebi.ac.uk>
+    Date:   Thu May 22 12:39:47 2014 +0100
+    
+        Updated the minimum requirement for eHive

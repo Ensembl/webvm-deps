@@ -1,0 +1,6 @@
+Ensembl 'ensembl-variation' release/75 from https://github.com/Ensembl/ensembl-variation.git is
+    commit bb8347e0f6b1c135839b4d7fa53f5c176434bed8 (grafted, HEAD, origin/release/75, _build)
+    Author: William McLaren <wm2@ebi.ac.uk>
+    Date:   Tue May 20 09:45:49 2014 +0100
+    
+        check defined before processing results
