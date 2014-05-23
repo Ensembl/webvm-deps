@@ -11,7 +11,7 @@ use warnings;
 use Website::SSO::Util;
 use Website::SSO::UserConfig;
 use Website::Utilities::IdGenerator;
-use Website::Utilities::Mail;
+#use Website::Utilities::Mail;
 use base qw(Website::Utilities::BasicUser Exporter);
 use English qw(-no_match_vars);
 use Carp;

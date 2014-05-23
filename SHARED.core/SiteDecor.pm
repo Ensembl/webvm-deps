@@ -12,30 +12,36 @@
 package SiteDecor;
 use strict;
 use warnings;
-use Data::Dumper;
-use Config::IniFiles;
-use SiteDecor::blast;
-use SiteDecor::genedb;
-use SiteDecor::intweb;
-use SiteDecor::intwebtest;
-use SiteDecor::merops;
+
+#### use statements trimmed heavily for faster startup,
+#    leaving enough to obtain the "SSO" login
+#
+#use Data::Dumper;
+#use Config::IniFiles;
+@Config::IniFiles::errors = ("(not loaded)"); # avoid interpolation warning in read_ini
+#use SiteDecor::blast;
+#use SiteDecor::genedb;
+#use SiteDecor::intweb;
+#use SiteDecor::intwebtest;
+#use SiteDecor::merops;
 use SiteDecor::plain;
-use SiteDecor::wtsi;
-use SiteDecor::yourgenome;
-use SiteDecor::Menu::jimmac;
-use SiteDecor::Menu::dreamweaver;
-use Website::portlet::getblast;
-use Website::portlet::bioresources;
-use Website::portlet::dbresources;
-use Website::portlet::news;
-use Website::portlet::calendar;
-use Website::portlet::special;
+#use SiteDecor::wtsi;
+#use SiteDecor::yourgenome;
+#use SiteDecor::Menu::jimmac;
+#use SiteDecor::Menu::dreamweaver;
+#use Website::portlet::getblast;
+#use Website::portlet::bioresources;
+#use Website::portlet::dbresources;
+#use Website::portlet::news;
+#use Website::portlet::calendar;
+#use Website::portlet::special;
 use Website::SSO::UserConfig;
 use Website::SSO::Util;
 use Website::Utilities::IdGenerator;
-use Website::DBStore;
+#use Website::DBStore;
+
 use Sys::Hostname;
-use Storable qw(nfreeze thaw);
+#use Storable qw(nfreeze thaw);
 use CGI;
 use base qw(Exporter);
 use English qw(-no_match_vars);
@@ -60,7 +66,7 @@ sub init_handler {
   my $server_name    = $class->server_name();
 
   my $handlers       = {
-			q(.*)                              => 'wtsi',     # default
+			q(.*)                              => 'plain',     # default
 			'acedb.org'                        => 'acedb',
 			'.eucomm.org'                      => 'eucomm',
 			'genedb.org'                       => 'genedb',
