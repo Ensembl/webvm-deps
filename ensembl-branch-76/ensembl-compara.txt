@@ -1,0 +1,8 @@
+Ensembl 'ensembl-compara' release/76 from https://github.com/Ensembl/ensembl-compara.git is
+    commit 95345e9690defd9bca29e9fcccf9bbe7f0504e62 (HEAD, origin/release/76, _build)
+    Author: Dan Sheppard <dan@ebi.ac.uk>
+    Date:   Tue Sep 9 11:07:52 2014 +0100
+    
+        species_tree_node_tag does not accept NULL values
+        
+        This happens when there are no duplication nodes: AVG() returns NULL

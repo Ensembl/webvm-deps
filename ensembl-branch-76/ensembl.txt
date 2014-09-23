@@ -1,0 +1,6 @@
+Ensembl 'ensembl' release/76 from intcvs1:/repos/git/anacode/github-mirror-ro/Anacode/ensembl.git is
+    commit 7a889894bddf08b46f7d2a1c705b6c989f2e4ab6 (HEAD, origin/release/76, _build)
+    Author: Magali Ruffier <mr6@ebi.ac.uk>
+    Date:   Thu Aug 21 13:57:38 2014 +0100
+    
+        gff format update to include assembly_name in output

@@ -1,0 +1,6 @@
+Ensembl 'ensembl-variation' release/76 from https://github.com/Ensembl/ensembl-variation.git is
+    commit 261e58e1ee90f923b1e6797fc73807344e90e70a (HEAD, origin/release/76, _build)
+    Author: William McLaren <wm2@ebi.ac.uk>
+    Date:   Fri Sep 5 15:24:31 2014 +0100
+    
+        URI encode semicolons as they occasionally appear in variant identifiers, even though they probably shouldnt

@@ -1,0 +1,6 @@
+Ensembl 'ensembl-funcgen' release/76 from https://github.com/Ensembl/ensembl-funcgen.git is
+    commit 0d7c021cbfbcf3d3e25fa706c6c1299e9d9a5cbb (HEAD, origin/release/76, _build)
+    Author: Thomas Juettemann <juettemann@ebi.ac.uk>
+    Date:   Fri Jul 25 12:00:36 2014 +0100
+    
+        bugfix feature_class
