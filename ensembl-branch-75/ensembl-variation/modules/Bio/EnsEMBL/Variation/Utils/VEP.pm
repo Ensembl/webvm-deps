@@ -285,6 +285,8 @@ sub parse_line {
     
     $vfs = add_lrg_mappings($config, $vfs) if defined($config->{lrg});
     
+    $_->{_line} = $line for @$vfs;
+    
     return $vfs;
 }
 
@@ -990,7 +992,7 @@ sub get_all_consequences {
     }
     
     # log sorted order for VCF input
-    if($config->{format} eq 'vcf') {
+    if($config->{format} eq 'vcf' || defined($config->{rest})) {
       my $i = 0;
       $_->{_order} = sprintf("%09d", ++$i) for @$listref;
     }
@@ -1233,6 +1235,9 @@ sub get_all_consequences {
       @return = sort {$$a cmp $$b} @return;
       $$_ =~ s/\#\#\#ORDER\#\#\# \d+ // for @return; 
     }
+    elsif(defined($test) && ref($test) eq 'HASH' && defined($test->{_order})) {
+      @return = map {delete $_->{_order}; $_} sort {$a->{_order} cmp $b->{_order}} @return;
+    }
     
     return \@return;
 }
@@ -1255,7 +1260,7 @@ sub vf_list_to_cons {
     my @non_variants = grep {$_->{non_variant}} @$listref;
     
     # check existing VFs
-    if(defined($config->{'cache_var_type'}) && $config->{'cache_var_type'} eq 'tabix') {
+    if(defined($config->{'cache_var_type'}) && $config->{'cache_var_type'} eq 'tabix' && !defined($config->{database})) {
       check_existing_tabix($config, $listref) if defined($config->{check_existing});
     }
     else {
@@ -1506,6 +1511,11 @@ sub vf_list_to_cons {
                 }
             }
             
+            # structured hash output for REST API
+            elsif(defined($config->{rest})) {
+              push @return, format_rest_output($config, $vf);
+            }
+            
             # normal output
             else {
                 push @return, @{vf_to_consequences($config, $vf)};
@@ -1527,6 +1537,207 @@ sub natural_sort {
   }
   else {
     return $a cmp $b;
+  }
+}
+
+sub format_rest_output {
+  my ($config, $vf) = @_;
+  
+  # define the set of fields that are lists
+  my @list_fields = qw(domains cell_type consequence refseq pubmed clin_sig);
+  
+  # define some to delete
+  my @delete_fields = qw(
+    Location
+    Uploaded_variation
+    Existing_variation
+    GMAF AFR_MAF AMR_MAF ASN_MAF EUR_MAF AA_MAF EA_MAF
+    PUBMED CLIN_SIG
+  );
+  
+  # define some fields to rename
+  my %rename = (
+    'consequence' => 'consequence_terms',
+    'gene' => 'gene_id',
+    'allele' => 'variant_allele',
+    'symbol' => 'gene_symbol',
+    'symbol_source' => 'gene_symbol_source',
+    'overlapbp' => 'bp_overlap',
+    'overlappc' => 'percentage_overlap',
+    'refseq' => 'refseq_transcript_ids',
+    'ensp' => 'protein_id',
+    'chr' => 'seq_region_name',
+    'variation_name' => 'id',
+  );
+  
+  my $hash = {
+    id => $vf->{variation_name},
+    seq_region_name => $vf->{chr},
+    start => $vf->{end},
+    end => $vf->{end},
+    strand => $vf->{strand},
+    _order => $vf->{_order},
+  };
+  
+  # add original input for use by POST endpoints
+  $hash->{input} = $vf->{_line} if defined($vf->{_line});
+  
+  if(defined($vf->{allele_string})) {
+    $hash->{allele_string} = $vf->{allele_string};
+  }
+  else {
+    $hash->{variant_class} = $vf->{class_SO_term};
+  }
+  
+  # add existing variants
+  if(defined($vf->{existing}) && scalar @{$vf->{existing}}) {
+    foreach my $ex(@{$vf->{existing}}) {
+      delete $ex->{$_} for qw(failed);
+      
+      # frequencies
+      foreach my $pop(grep {defined($ex->{$_})} qw(AFR AMR ASN EUR AA EA)) {
+        my $tmp = $ex->{$pop};
+        
+        if($tmp =~ /(\w)\:([\d\.]+)/) {
+          $ex->{lc($pop).'_maf'} = $1;
+          $ex->{lc($pop).'_allele'} = $2;
+        }
+        else {
+          $ex->{lc($pop).'_maf'} = $tmp;
+        }
+        
+        delete $ex->{$pop};
+      }
+      
+      # remove empty
+      foreach my $key(keys %$ex) {
+        delete $ex->{$key} if !defined($ex->{$key});
+      }
+      
+      # fix comma-separated lists into arrays
+      foreach my $key(grep {defined($ex->{$_})} @list_fields) {
+        $ex->{$key} = [split(',', $ex->{$key})];
+      }
+      
+      # rename
+      foreach my $key(grep {defined($ex->{$_})} keys %rename) {
+        $ex->{$rename{$key}} = $ex->{$key};
+        delete $ex->{$key};
+      }
+      
+      push @{$hash->{colocated_variants}}, $ex;
+    }
+  }
+  
+  # record all cons terms so we can get the most severe
+  my @con_terms;
+  
+  # add consequence stuff
+  foreach my $con(grep {defined($_)} @{vf_to_consequences($config, $vf)}) {
+    
+    # flatten
+    $con->{$_} = $con->{Extra}->{$_} for keys %{$con->{Extra}};
+    delete $con->{Extra};
+    
+    # remove unwanted keys
+    delete $con->{$_} for @delete_fields;
+    
+    # lc and remove empty
+    foreach my $key(keys %$con) {
+      my $tmp = $con->{$key};
+      delete $con->{$key};
+      
+      next if !defined($tmp) || $tmp eq '-';
+      
+      # convert YES to 1
+      $tmp = 1 if $tmp eq 'YES';
+      
+      # fix position fields into start and end
+      if($key =~ /(\w+?)\_position$/i) {
+        my $coord_type = lc($1);
+        my ($s, $e) = split('-', $tmp);
+        $con->{$coord_type.'_start'} = $s;
+        $con->{$coord_type.'_end'} = defined($e) && $e =~ /^\d+$/ ? $e : $s;
+        next;
+      }
+      
+      $con->{lc($key)} = $tmp;
+    }
+    
+    my $ftype = lc($con->{feature_type} || 'intergenic');
+    $ftype =~ s/feature/\_feature/;
+    delete $con->{feature_type};
+    
+    # fix SIFT and PolyPhen
+    foreach my $tool(qw(sift polyphen)) {
+      if(defined($con->{$tool}) && $con->{$tool} =~ m/([a-z\_]+)?\(?([\d\.]+)?\)?/i) {
+        my ($pred, $score) = ($1, $2);
+        $con->{$tool.'_prediction'} = $pred if $pred;
+        $con->{$tool.'_score'} = $score if defined($score);
+        delete $con->{$tool};
+      }
+    }
+    
+    # fix comma-separated lists into arrays
+    foreach my $key(grep {defined($con->{$_})} @list_fields) {
+      $con->{$key} = [split(',', $con->{$key})];
+    }
+    
+    # fix domains
+    if(defined($con->{domains})) {
+      my @dom;
+      
+      foreach(@{$con->{domains}}) {
+        m/(\w+)\:(\w+)/;
+        push @dom, {"db" => $1, "name" => $2} if $1 && $2;
+      }
+      $con->{domains} = \@dom;
+    }
+    
+    # log observed consequence terms
+    push @con_terms, @{$con->{consequence}};
+    
+    # rename
+    $rename{feature} = lc($ftype).'_id';
+    foreach my $key(grep {defined($con->{$_})} keys %rename) {
+      $con->{$rename{$key}} = $con->{$key};
+      delete $con->{$key};
+    }
+    
+    push @{$hash->{$ftype.'_consequences'}}, $con;
+  }
+  
+  # get most severe consequence from those logged in @con_terms
+  my %all_cons = %Bio::EnsEMBL::Variation::Utils::Constants::OVERLAP_CONSEQUENCES;
+  $hash->{most_severe_consequence} = (sort {$all_cons{$a}->rank <=> $all_cons{$b}->rank} @con_terms)[0];
+  
+  numberify($hash);
+  
+  return $hash;
+}
+
+sub numberify {
+  my $ref = shift;
+  
+  if(ref($ref) eq 'HASH') {
+    foreach my $k(keys %$ref) {
+      if(ref($ref->{$k}) =~ /HASH|ARRAY/) {
+        numberify($ref->{$k});
+      }
+      else {
+        $ref->{$k} = $ref->{$k} + 0 if defined($ref->{$k}) && $ref->{$k} =~ /^\-?[\d\.]+$/ && $k ne 'seq_region_name' && $k ne 'id';
+      }
+    }
+  }
+  elsif(ref($ref) eq 'ARRAY') {
+    foreach my $i(0..((scalar @$ref) - 1)) {
+      if(ref($ref->[$i]) =~ /HASH|ARRAY/) {
+        numberify($ref->[$i]);
+      }
+      else {
+        $ref->[$i] = $ref->[$i] + 0 if defined($ref->[$i]) && $ref->[$i] =~ /^\-?[\d\.]+$/;
+      }
+    }
   }
 }
 
@@ -1806,6 +2017,8 @@ sub svf_to_consequences {
             $line->{Extra}->{OverlapPC} = sprintf("%.2f", $overlap_pc) if $overlap_pc > 0;
             
             add_extra_fields($config, $line, $svoa);
+            
+            $line = run_plugins($svoa, $line, $config);
             
             push @return, $line;
         }
@@ -2292,7 +2505,7 @@ sub init_line {
     my $line = {
         Uploaded_variation  => $vf->variation_name,
         Location            => ($vf->{chr} || $vf->seq_region_name).':'.format_coords($vf->start, $vf->end),
-        Existing_variation  => defined $vf->{existing} && scalar @{$vf->{existing}} ? join ",", map {$_->{variation_name}} @{$vf->{existing}} : '-',
+        Existing_variation  => defined $vf->{existing} && scalar @{$vf->{existing}} ? join ",", map {$_->{variation_name} || ''} @{$vf->{existing}} : '-',
         Extra               => {},
     };
     
@@ -2678,8 +2891,8 @@ sub whole_genome_fetch {
     }
     
     my $slice_cache = $config->{slice_cache};
-    $slice_cache = build_slice_cache($config, $config->{tr_cache}) unless defined($slice_cache->{$chr});
-    $slice_cache = build_slice_cache($config, $config->{rf_cache}) unless defined($slice_cache->{$chr});
+    build_slice_cache($config, $config->{tr_cache}) unless defined($slice_cache->{$chr});
+    build_slice_cache($config, $config->{rf_cache}) unless defined($slice_cache->{$chr});
     
     debug("Analyzing chromosome $chr") unless defined($config->{quiet});
     
@@ -2690,8 +2903,13 @@ sub whole_genome_fetch {
     my ($tmp_vf_hash, @svfs);
     
     foreach my $chunk(keys %{$vf_hash->{$chr}}) {
-        foreach my $pos(keys %{$vf_hash->{$chr}{$chunk}}) {
+        foreach my $pos(keys %{$vf_hash->{$chr}{$chunk}}) {            
             foreach my $vf(@{$vf_hash->{$chr}{$chunk}{$pos}}) {
+                
+                # copy slice while we're here
+                $vf->{slice} ||= $slice_cache->{$chr};
+                $vf->{slice} = $slice_cache->{$chr} if defined($vf->{slice}->{is_fake}) && defined($slice_cache->{$chr});
+                
                 if($vf->isa('Bio::EnsEMBL::Variation::StructuralVariationFeature')) {
                     push @svfs, $vf;
                 }
@@ -2720,9 +2938,6 @@ sub whole_genome_fetch {
     # sort results into @finished_vfs array
     foreach my $chunk(keys %{$vf_hash->{$chr}}) {
         foreach my $pos(keys %{$vf_hash->{$chr}{$chunk}}) {
-            
-            # pinch slice from slice cache if we don't already have it
-            $_->{slice} ||= $slice_cache->{$chr} for @{$vf_hash->{$chr}{$chunk}{$pos}};
             
             if(defined($config->{regulatory})) {
                 foreach my $type(@REG_FEAT_TYPES) {
@@ -2807,15 +3022,12 @@ sub whole_genome_fetch_transcript {
     my $chr = shift;
     
     my $tr_cache = $config->{tr_cache};
-    my $slice_cache = $config->{slice_cache};
     
-    my $up_down_size = up_down_size();
+    my $up_size   = $Bio::EnsEMBL::Variation::Utils::VariationEffect::UPSTREAM_DISTANCE;
+    my $down_size = $Bio::EnsEMBL::Variation::Utils::VariationEffect::DOWNSTREAM_DISTANCE;
     
     # check we have defined regions
     return unless defined($vf_hash->{$chr}) && defined($tr_cache->{$chr});
-    
-    # copy slice from transcript to slice cache
-    $slice_cache = build_slice_cache($config, $tr_cache) unless defined($slice_cache->{$chr});
     
     debug("Analyzing variants") unless defined($config->{quiet});
     
@@ -2829,8 +3041,8 @@ sub whole_genome_fetch_transcript {
         my $tr = $tr_cache->{$chr}->[$tr_counter++];
         
         # do each overlapping VF
-        my $s = $tr->start - $up_down_size;
-        my $e = $tr->end + $up_down_size;
+        my $s = $tr->start - ($tr->strand == 1 ? $up_size : $down_size);
+        my $e = $tr->end + ($tr->strand == 1 ? $down_size : $up_size);
         
         # get the chunks this transcript overlaps
         my %chunks;
@@ -2846,11 +3058,7 @@ sub whole_genome_fetch_transcript {
                 grep {$_->{start} <= $e && $_->{end} >= $s}
                 map {@{$vf_hash->{$chr}{$chunk}{$_}}}
                 keys %{$vf_hash->{$chr}{$chunk}}
-            ) {
-                # pinch slice from slice cache if we don't already have it
-                $vf->{slice} ||= $slice_cache->{$chr};
-                $vf->{slice} = $slice_cache->{$chr} if defined($vf->{slice}->{is_fake});
-                
+            ) {                
                 my $tv = Bio::EnsEMBL::Variation::TranscriptVariation->new(
                     -transcript        => $tr,
                     -variation_feature => $vf,
@@ -2892,7 +3100,6 @@ sub whole_genome_fetch_reg {
     my $chr = shift;
     
     my $rf_cache = $config->{rf_cache};
-    my $slice_cache = $config->{slice_cache};
     
     foreach my $type(keys %{$rf_cache->{$chr}}) {
         debug("Analyzing ".$type."s") unless defined($config->{quiet});
@@ -2944,9 +3151,9 @@ sub whole_genome_fetch_sv {
     
     my $tr_cache = $config->{tr_cache};
     my $rf_cache = $config->{rf_cache};
-    my $slice_cache = $config->{slice_cache};
     
-    my $up_down_size = up_down_size();
+    my $up_size   = $Bio::EnsEMBL::Variation::Utils::VariationEffect::UPSTREAM_DISTANCE;
+    my $down_size = $Bio::EnsEMBL::Variation::Utils::VariationEffect::DOWNSTREAM_DISTANCE;
     
     debug("Analyzing structural variations") unless defined($config->{quiet});
     
@@ -2960,7 +3167,16 @@ sub whole_genome_fetch_sv {
         my %done_genes = ();
         
         if(defined($tr_cache->{$chr})) {
-            foreach my $tr(grep {overlap($_->{start} - $up_down_size, $_->{end} + $up_down_size, $svf->{start}, $svf->{end})} @{$tr_cache->{$chr}}) {
+            foreach my $tr(
+              grep {
+                overlap(
+                  $_->{start} - ($_->strand == 1 ? $up_size : $down_size),
+                  $_->{end} + ($_->strand == 1 ? $down_size : $up_size),
+                  $svf->{start},
+                  $svf->{end}
+                )
+              } @{$tr_cache->{$chr}}
+            ) {
                 my $svo = Bio::EnsEMBL::Variation::TranscriptStructuralVariation->new(
                     -transcript                   => $tr,
                     -structural_variation_feature => $svf,
@@ -3117,9 +3333,6 @@ sub fetch_transcripts {
             
             # restore quiet status
             $config->{quiet} = $quiet;
-            
-            # build slice cache
-            $slice_cache = build_slice_cache($config, $tr_cache) unless defined($slice_cache->{$chr});
         }
     }
     
@@ -3552,6 +3765,8 @@ sub get_slice {
     
     # first try to get a chromosome
     eval { $slice = $config->{$otherfeatures.'sa'}->fetch_by_region(undef, $chr); };
+    
+    $config->{slice_cache}->{$chr} ||= $slice;
     
     return $slice;
 }
@@ -4003,7 +4218,7 @@ sub build_slice_cache {
     my $config = shift;
     my $tr_cache = shift;
     
-    my %slice_cache;
+    $config->{slice_cache} ||= {};
     
     foreach my $chr(keys %$tr_cache) {
         
@@ -4011,27 +4226,27 @@ sub build_slice_cache {
         
         if(ref($tmp) eq 'HASH') {
           foreach my $type(keys %$tmp) {
-            $slice_cache{$chr} ||= scalar @{$tmp->{$type}} ? $tmp->{$type}->[0]->slice : &get_slice($config, $chr);
+            $config->{slice_cache}->{$chr} ||= scalar @{$tmp->{$type}} ? $tmp->{$type}->[0]->slice : &get_slice($config, $chr);
           }
         }
         else {
-          $slice_cache{$chr} ||= scalar @$tmp ? $tmp->[0]->slice : &get_slice($config, $chr);
+          $config->{slice_cache}->{$chr} ||= scalar @$tmp ? $tmp->[0]->slice : &get_slice($config, $chr);
         }
         
-        if(!defined($slice_cache{$chr})) {
-            delete $slice_cache{$chr}
+        if(!defined($config->{slice_cache}->{$chr})) {
+            delete $config->{slice_cache}->{$chr}
         }
         
         else {
             # reattach adaptor to the coord system
-            $slice_cache{$chr}->{coord_system}->{adaptor} ||= $config->{csa};
+            $config->{slice_cache}->{$chr}->{coord_system}->{adaptor} ||= $config->{csa};
             
             # log length for stats
-            $config->{stats}->{chr_lengths}->{$chr} ||= $slice_cache{$chr}->end;
+            $config->{stats}->{chr_lengths}->{$chr} ||= $config->{slice_cache}->{$chr}->end;
         }
     }
     
-    return \%slice_cache;
+    return $config->{slice_cache};
 }
 
 # pre-fetches per-transcript data
@@ -4643,7 +4858,7 @@ sub cache_reg_feats {
         }
         
         # delete reference to slice adaptor before we write to cache
-        delete $slice->{adaptor};
+        delete $slice->{adaptor} if defined($config->{write_cache});
     }
     
     end_progress($config);
@@ -4758,6 +4973,9 @@ sub load_dumped_reg_feat_cache {
     my $rf_cache;
     $rf_cache = fd_retrieve($fh);
     close $fh;
+    
+    # reattach adaptors
+    $_->{slice}->{adaptor} = $config->{sa} for map {@{$rf_cache->{$chr}->{$_}}} keys %{$rf_cache->{$chr}};
     
     return $rf_cache;
 }
@@ -5071,6 +5289,9 @@ sub build_full_cache {
         
         debug((defined($config->{rebuild}) ? "Rebuild" : "Creat")."ing cache for chromosome $chr") unless defined($config->{quiet});
         
+        # cache slice
+        $config->{slice_cache}->{$chr} = $slice;
+        
         while($start < $slice->end) {
             
             progress($config, $counter++, $region_count);
@@ -5090,6 +5311,9 @@ sub build_full_cache {
                 #(defined($config->{tabix}) ? dump_transcript_cache_tabix($config, $tmp_cache, $chr, $start.'-'.$end) : dump_transcript_cache($config, $tmp_cache, $chr, $start.'-'.$end));
                 dump_transcript_cache($config, $tmp_cache, $chr, $start.'-'.$end);
                 undef $tmp_cache;
+                
+                # restore slice adaptor
+                $slice->{adaptor} ||= $config->{sa};
             }
             
             
@@ -5104,6 +5328,9 @@ sub build_full_cache {
                 
                 # this gets cleaned off but needs to be there for the next loop
                 $slice->{coord_system}->{adaptor} = $config->{csa};
+                
+                # restore slice adaptor
+                $slice->{adaptor} ||= $config->{sa};
             }
             
             # store variations

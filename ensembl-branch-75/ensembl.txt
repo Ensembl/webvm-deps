@@ -1,6 +1,6 @@
 Ensembl 'ensembl' release/75 from intcvs1:/repos/git/anacode/github-mirror-ro/Anacode/ensembl.git is
-    commit e1ee9014f702efce19e93e50a61e5eb2d3f787b2 (HEAD, origin/release/75, _build)
+    commit 5e0f5e707d5ef397bf1c76b7f63d8dda22dc3560 (HEAD, origin/release/75, _build)
     Author: Magali Ruffier <mr6@ebi.ac.uk>
-    Date:   Thu May 15 15:29:14 2014 +0100
+    Date:   Wed Jul 30 11:15:11 2014 +0100
     
-        copying API changes from head for new REST endpoints
+        fixed masked spliced seq for reverse strand

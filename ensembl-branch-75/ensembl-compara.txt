@@ -1,6 +1,8 @@
 Ensembl 'ensembl-compara' release/75 from https://github.com/Ensembl/ensembl-compara.git is
-    commit 832c3d0170284f240f9a3570683dce41496e1daf (grafted, HEAD, origin/release/75, _build)
-    Author: Matthieu Muffato <muffato@ebi.ac.uk>
-    Date:   Thu May 22 12:39:47 2014 +0100
+    commit 9a98ca2dc2cd4e09ff1861789d96da0c9477921e (HEAD, origin/release/75, _build)
+    Author: ens-stephenf <ens-stephenf@users.noreply.github.com>
+    Date:   Fri Aug 1 13:20:16 2014 +0100
     
-        Updated the minimum requirement for eHive
+        Update AlignmentProcessing.pm
+        
+        Changed the order of deletes of rows from the genomic_align and genomic_align_block tables to avoid foreign key constraint problems

@@ -1,6 +1,6 @@
 Ensembl 'ensembl-funcgen' release/75 from https://github.com/Ensembl/ensembl-funcgen.git is
-    commit 381dbed2841fed008cd0008107f78970a5bd1890 (grafted, HEAD, origin/release/75, _build)
+    commit af41be02552700c249fadebce5051e8a7c2358de (HEAD, origin/release/75, _build)
     Author: Nathan Johnson <njohnson@ebi.ac.uk>
-    Date:   Thu Feb 13 15:12:25 2014 +0000
+    Date:   Tue May 27 13:43:19 2014 +0100
     
-        Merge branch 'release/75' of github.com:Ensembl/ensembl-funcgen into release/75
+        Added summary_as_hash method for REST API.
