@@ -1,0 +1,6 @@
+Ensembl 'ensembl-funcgen' release/77 from https://github.com/Ensembl/ensembl-funcgen.git is
+    commit b40eb239749d34948dc4bcfb847bfbf693a24f58 (grafted, HEAD, origin/release/77, _build)
+    Author: Nathan Johnson <njohnson@ebi.ac.uk>
+    Date:   Fri Oct 31 12:21:39 2014 +0000
+    
+        Fixed FeatureTypeAdaptor::fetch_by_name wantarray bug

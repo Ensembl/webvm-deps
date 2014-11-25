@@ -1,0 +1,10 @@
+Ensembl 'ensembl-compara' release/77 from https://github.com/Ensembl/ensembl-compara.git is
+    commit 7eae51f206cc311144f864bc4ed20bb5bbcb5292 (grafted, HEAD, origin/release/77, _build)
+    Author: Matthieu Muffato <muffato@ebi.ac.uk>
+    Date:   Wed Oct 29 09:27:39 2014 +0000
+    
+        bugfixes in get_4D_SimpleAlign()
+        
+        - bugfix: the cdna alignment was not split in codons
+        - New option to only keep columns for which all the sequences code for the same 4D amino-acid
+        - New option to keep gaps

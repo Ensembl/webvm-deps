@@ -1,0 +1,6 @@
+Ensembl 'ensembl-variation' release/77 from https://github.com/Ensembl/ensembl-variation.git is
+    commit 4ba7e93d88fefb284239f66bcc9eee5f624ce1f9 (grafted, HEAD, origin/release/77, _build)
+    Author: William McLaren <wm2@ebi.ac.uk>
+    Date:   Fri Nov 21 14:45:00 2014 +0000
+    
+        a couple of little changes to allow fetch_by_hgvs_notation to work with species that have no variation DB
