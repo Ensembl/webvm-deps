@@ -1,0 +1,9 @@
+Ensembl 'ensembl' release/78 from intcvs1:/repos/git/anacode/github-mirror-ro/Anacode/ensembl.git is
+    commit 4145133ad3d1e4ec1df45d126d24fa917966ebde (HEAD, origin/release/78, _build)
+    Merge: 7ed845e ae1e108
+    Author: Kieron Taylor <nerdstrike@users.noreply.github.com>
+    Date:   Fri Feb 13 10:25:57 2015 +0000
+    
+        Merge pull request #55 from Anacode/mg13/78/fix_sqlite_timestamps
+        
+        Mg13/78/fix sqlite timestamps

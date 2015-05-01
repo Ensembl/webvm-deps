@@ -1,0 +1,6 @@
+Ensembl 'ensembl-variation' release/78 from https://github.com/Ensembl/ensembl-variation.git is
+    commit e06a7d8ec1c29d3cd67495eb68dbb63f30f478c1 (HEAD, origin/release/78, _build)
+    Author: William McLaren <wm2@ebi.ac.uk>
+    Date:   Tue Mar 31 10:23:05 2015 +0100
+    
+        hack fix for refseq transcripts missing gene symbol data

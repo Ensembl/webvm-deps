@@ -1,0 +1,6 @@
+Ensembl 'ensembl-compara' release/78 from https://github.com/Ensembl/ensembl-compara.git is
+    commit 8446295a91ee6365df97a79072363255aafb389d (HEAD, origin/release/78, _build)
+    Author: Matthieu Muffato <muffato@ebi.ac.uk>
+    Date:   Mon Mar 9 15:34:23 2015 +0000
+    
+        protection against cheeky semi-colons
