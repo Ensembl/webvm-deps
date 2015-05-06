@@ -1,0 +1,8 @@
+Ensembl 'ensembl-variation' release/79 from https://github.com/Ensembl/ensembl-variation.git is
+    commit d70a772ca62be60c81382a2caf678ef04d486e66 (HEAD, origin/release/79, _build)
+    Author: William McLaren <willmclaren@users.noreply.github.com>
+    Date:   Fri May 1 13:13:39 2015 +0100
+    
+        Merge pull request #16 from wspoonr/release/79
+        
+        Added genotype phasing when creating objects from adaptor

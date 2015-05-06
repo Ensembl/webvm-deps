@@ -1,0 +1,6 @@
+Ensembl 'ensembl' release/79 from intcvs1:/repos/git/anacode/github-mirror-ro/Anacode/ensembl.git is
+    commit 2baa0f180dde74e9d89b7ac0495d15c79bc63ff3 (HEAD, origin/release/79, _build)
+    Author: Magali Ruffier <mr6@ebi.ac.uk>
+    Date:   Thu Apr 9 16:50:52 2015 +0100
+    
+        ENSCORESW-1193: is_empty should be 0 if there is data

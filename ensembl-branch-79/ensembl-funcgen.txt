@@ -1,0 +1,6 @@
+Ensembl 'ensembl-funcgen' release/79 from https://github.com/Ensembl/ensembl-funcgen.git is
+    commit 7f88c8c06054199e76f9cbb9c37b1083a874252d (HEAD, origin/release/79, _build)
+    Author: Nathan Johnson <njohnson@ebi.ac.uk>
+    Date:   Tue Feb 24 13:29:01 2015 +0000
+    
+        Added DBAdaptor::feature_tables and implemented in new and imporoved HealthChecker::update_meta_coord. Also improved validate_DataSets and update_DB_for_release now wraps spcified methods in evals

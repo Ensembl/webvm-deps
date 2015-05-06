@@ -1,0 +1,6 @@
+Ensembl 'ensembl-compara' release/79 from https://github.com/Ensembl/ensembl-compara.git is
+    commit 5c946aa1cce03428038cbd2a948b60d2dc7ea007 (HEAD, origin/release/79, _build)
+    Author: Matthieu Muffato <muffato@ebi.ac.uk>
+    Date:   Wed Apr 15 02:39:43 2015 +0100
+    
+        Defaults to stable_id if the name is missing
