@@ -1,8 +1,0 @@
-Ensembl 'ensembl-compara' release/75 from https://github.com/Ensembl/ensembl-compara.git is
-    commit 9a98ca2dc2cd4e09ff1861789d96da0c9477921e (HEAD, origin/release/75, _build)
-    Author: ens-stephenf <ens-stephenf@users.noreply.github.com>
-    Date:   Fri Aug 1 13:20:16 2014 +0100
-    
-        Update AlignmentProcessing.pm
-        
-        Changed the order of deletes of rows from the genomic_align and genomic_align_block tables to avoid foreign key constraint problems

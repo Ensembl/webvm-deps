@@ -1,6 +1,0 @@
-Ensembl 'ensembl' release/75 from intcvs1:/repos/git/anacode/github-mirror-ro/Anacode/ensembl.git is
-    commit 5e0f5e707d5ef397bf1c76b7f63d8dda22dc3560 (HEAD, origin/release/75, _build)
-    Author: Magali Ruffier <mr6@ebi.ac.uk>
-    Date:   Wed Jul 30 11:15:11 2014 +0100
-    
-        fixed masked spliced seq for reverse strand

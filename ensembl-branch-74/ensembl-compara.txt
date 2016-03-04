@@ -1,6 +1,0 @@
-Ensembl 'ensembl-compara' release/74 from https://github.com/Ensembl/ensembl-compara.git is
-    commit d37bac136c078adc28a9fbb6ad2e53c5d745160a (HEAD, origin/release/74, _build)
-    Author: Matthieu Muffato <muffato@ebi.ac.uk>
-    Date:   Fri Feb 7 10:32:52 2014 +0000
-    
-        _filter_paralogues_by_ancestral_species() can be removed

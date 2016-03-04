@@ -1,6 +1,0 @@
-Ensembl 'ensembl-funcgen' release/74 from https://github.com/Ensembl/ensembl-funcgen.git is
-    commit 05fc9b99709e99f8c4bf531c78b8435f62d1d4cb (HEAD, origin/release/74, _build)
-    Author: Nathan Johnson <njohnson@ebi.ac.uk>
-    Date:   Fri Feb 7 11:03:40 2014 +0000
-    
-        ipdate -analysis to -analysis_name in AddPeakDataSets

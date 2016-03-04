@@ -1,6 +1,0 @@
-Ensembl 'ensembl-variation' release/74 from https://github.com/Ensembl/ensembl-variation.git is
-    commit ef2e455595e7632c434b2677b3657b954f0b3a16 (HEAD, origin/release/74, _build)
-    Author: Sarah Hunt <seh@ebi.ac.uk>
-    Date:   Mon Feb 10 09:30:29 2014 +0000
-    
-        drop additional column from temp table for ensembl genomes

@@ -1,6 +1,0 @@
-Ensembl 'ensembl-variation' release/75 from https://github.com/Ensembl/ensembl-variation.git is
-    commit a306cfca376f313b37d9133d5c7f7d4b905659a6 (HEAD, origin/release/75, _build)
-    Author: William McLaren <wm2@ebi.ac.uk>
-    Date:   Wed Jul 23 16:44:26 2014 +0100
-    
-        cache slice during build

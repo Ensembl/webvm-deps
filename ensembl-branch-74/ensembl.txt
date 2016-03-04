@@ -1,6 +1,0 @@
-Ensembl 'ensembl' release/74 from https://github.com/Ensembl/ensembl.git is
-    commit d3cfe97706ed1d38ee6b561198dd592c9f4ea2ee (HEAD, origin/release/74, _build)
-    Author: Magali Ruffier <mr6@ebi.ac.uk>
-    Date:   Thu Feb 6 13:31:27 2014 +0000
-    
-        ENSCORESW-839: missing slice argument in get_all_DitagFeatures method
