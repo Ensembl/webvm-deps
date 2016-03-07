@@ -1,0 +1,6 @@
+Ensembl 'ensembl-funcgen' release/83 from https://github.com/Ensembl/ensembl-funcgen.git is
+    commit 4d7e61072fca694bf1568ccba863f9388dc39b61 (grafted, HEAD, origin/release/83, _build)
+    Author: Ilias Lavidas <ilavidas@ebi.ac.uk>
+    Date:   Mon Nov 2 16:37:06 2015 +0000
+    
+        update schema_version on meta table

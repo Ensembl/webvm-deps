@@ -1,0 +1,6 @@
+Ensembl 'ensembl-variation' release/83 from https://github.com/Ensembl/ensembl-variation.git is
+    commit 5ab0521467dfad945ba5318075307ab7af843e0e (grafted, HEAD, origin/release/83, _build)
+    Author: William McLaren <wm2@ebi.ac.uk>
+    Date:   Fri Feb 26 11:10:14 2016 +0000
+    
+        limit number of open tabix files as this can exceeed FTP connection limits

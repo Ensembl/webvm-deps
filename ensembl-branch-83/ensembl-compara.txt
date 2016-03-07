@@ -1,0 +1,6 @@
+Ensembl 'ensembl-compara' release/83 from https://github.com/Ensembl/ensembl-compara.git is
+    commit 3add2c9763fb8f9232a02c5ceee95889567dd49f (grafted, HEAD, origin/release/83, _build)
+    Author: Matthieu Muffato <muffato@ebi.ac.uk>
+    Date:   Wed Feb 17 18:36:05 2016 +0000
+    
+        Like in Lastz_conf, "curr_core_sources_locs" can be skipped when a collection is given

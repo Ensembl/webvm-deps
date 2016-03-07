@@ -1,0 +1,9 @@
+Ensembl 'ensembl' release/83 from intcvs1:/repos/git/anacode/github-mirror-ro/Ensembl/ensembl.git is
+    commit 1c1d66f67504f2d89888311a4b177fde00be34fc (HEAD, origin/release/83, _build)
+    Merge: bca1254 3cfb926
+    Author: Magali Ruffier <mr6@ebi.ac.uk>
+    Date:   Fri Dec 4 12:01:29 2015 +0000
+    
+        Merge pull request #108 from nicklangridge/nicklangridge-patch-2
+        
+        Check that adaptor exists before trying to use dbc
