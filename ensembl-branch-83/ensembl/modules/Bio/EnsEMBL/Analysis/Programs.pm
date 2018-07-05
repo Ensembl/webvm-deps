@@ -1,6 +1,7 @@
 =head1 LICENSE
 
 Copyright [1999-2015] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
+Copyright [2018] EMBL-European Bioinformatics Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,7 +34,7 @@ use vars qw( %Program_Paths );
 use Carp;
 use Cwd;
 use Sys::Hostname;
-use Bio::EnsEMBL::Utils::Exception qw ( throw ) ; 
+use Bio::EnsEMBL::Utils::Exception qw ( throw ) ;
 
 sub import {
     my $pkg = shift;
@@ -42,18 +43,18 @@ sub import {
         $Program_Paths{ $_ } = 0;
     }
     my( $home, @PATH, @missing );
-    
+
     $home = cwd() or die "Can't save cwd";
     my $H = [ $home, 1 ];
-    
+
     @PATH = split /:/, $ENV{'PATH'};
     foreach (@PATH) {
         s|/?$|/|; # Append / to each path
     }
-    
+
     # For each program, check there is an executable
     foreach my $program (keys %Program_Paths) {
-        
+
         # Deal with paths
         if ($program =~ m|/|) {
             _go_home( $H );
@@ -63,7 +64,7 @@ sub import {
                                       : (getpwuid($>))[7] }e;
             if (my $real = _is_prog( $H, $path )) {
                 $Program_Paths{ $program } = $real;
-            }            
+            }
         }
         # Or search through all paths
         else {
@@ -77,16 +78,16 @@ sub import {
         }
     }
     _go_home( $H ); # Return to home directory
-    
+
     # Make a list of all missing programs
     foreach my $program (keys %Program_Paths) {
         push( @missing, $program ) unless $Program_Paths{ $program };
     }
-    
+
     # Give informative death message if programs weren't found
-    if (@missing) { 
+    if (@missing) {
         throw("Unable to locate the following programs as '". (getpwuid($<))[0]. "' on host '". hostname(). "' :\t".
-        join ( " --> " , @missing )) ; 
+        join ( " --> " , @missing )) ;
     }
 }
 
@@ -98,7 +99,7 @@ sub _is_prog {
     unless ($prog) {
         ($path, $prog) = $path =~ m|(.*?)([^/]+)$|;
     }
-    
+
     if (-l "$path$prog") {
         # Follow link
         _follow( $h, $path ) or return;
@@ -122,7 +123,7 @@ sub _is_prog {
 # To avoid unnecessary chdir'ing
 sub _follow {
     my( $H, $path ) = @_;
-    
+
     # Chdir without arguments goes to home dir.
     # Can't use defined in test since $path may contain
     # a real null string.
@@ -137,7 +138,7 @@ sub _follow {
 }
 sub _go_home {
     my( $H ) = @_;
-    
+
     # Go home unless we're already there
     if ($H->[1] == 0) {
         if (chdir( $H->[0] )) {
@@ -156,7 +157,7 @@ __END__
 
 =head1 SYSNOPSIS
 
-    use Bio::EnsEMBL::Analysis::Programs qw( efetch getz est2genome 
+    use Bio::EnsEMBL::Analysis::Programs qw( efetch getz est2genome
                      /usr/local/bin/this_one
                      ~me/some/path/my_prog
                      ~/../jane/bin/her_prog );
@@ -192,14 +193,3 @@ path will appear as "//prog" in %Program_Paths, not "/prog".
 =head1 AUTHOR
 
 B<James Gilbert> Email jgrg@sanger.ac.uk
-
-
-
-
-
-
-
-
-
-
-

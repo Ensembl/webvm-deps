@@ -1,6 +1,7 @@
 =head1 LICENSE
 
 Copyright [1999-2014] Wellcome Trust Sanger Institute and the EMBL-European Bioinformatics Institute
+Copyright [2018] EMBL-European Bioinformatics Institute
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -107,7 +108,7 @@ The methods should return Sequence Features with the following spec:
 
   a) must implement the Bio::SeqFeatureI interface.
 
-  b) must accept "set" calls on 
+  b) must accept "set" calls on
 
   start,end,strand
 
@@ -154,7 +155,7 @@ use vars qw(@ISA);
 
   Arg [1]    : none
   Example    : none
-  Description: This method is present to make the ExternalFeatureFactory 
+  Description: This method is present to make the ExternalFeatureFactory
                interface behave as an ExternalFeatureAdaptor. It is for
                backwards compatibility.
   Returntype : none
@@ -173,7 +174,7 @@ sub coordinate_systems {
 
   Arg [1]    : none
   Example    : none
-  Description: This method is present to make the ExternalFeatureFactory 
+  Description: This method is present to make the ExternalFeatureFactory
                interface behave as an ExternalFeatureAdaptor. It is for
                backwards compatibility.
   Returntype : none
@@ -196,10 +197,10 @@ sub fetch_all_by_contig_name {
    my $clone = $ctg->clone;
    my $version = $clone->version;
    my $ctg_length = $ctg->length;
-   
+
    #get contig features
-   push @features, $self->get_Ensembl_SeqFeatures_contig($ctg->name, 
-							 $version, 
+   push @features, $self->get_Ensembl_SeqFeatures_contig($ctg->name,
+							 $version,
 							 1,
 							 $ctg_length);
 
@@ -212,7 +213,7 @@ sub fetch_all_by_contig_name {
 							     $clone_end);
 
    #change clone coordinates to contig coordinates
-   my ($start, $end); 
+   my ($start, $end);
    foreach my $f (@clone_features) {
      $start = $f->start - $clone_start + 1;
      $end   = $f->end   - $clone_start + 1;
@@ -235,7 +236,7 @@ sub fetch_all_by_contig_name {
  Usage   :
  Function:
  Example :
- Returns : 
+ Returns :
  Args    :
 
 
@@ -255,7 +256,7 @@ sub get_Ensembl_SeqFeatures_contig{
  Usage   :
  Function:
  Example :
- Returns : 
+ Returns :
  Args    :
 
 
@@ -263,7 +264,7 @@ sub get_Ensembl_SeqFeatures_contig{
 
 sub get_Ensembl_SeqFeatures_clone{
    my ($self) = @_;
-   
+
    $self->warn("Abstract method get_Ensembl_SeqFeatures_clone " .
 	    "encountered in base class. Implementation failed to complete it");
 
@@ -287,16 +288,16 @@ sub get_Ensembl_Genes_clone {
 =head2 get_SeqFeature_by_id
 
  Title   : get_SeqFeature_by_id (Abstract)
- Usage   : 
- Function: Return SeqFeature object for any valid unique id  
+ Usage   :
+ Function: Return SeqFeature object for any valid unique id
  Example :
- Returns : 
+ Returns :
  Args    : id as determined by the External Database
 
 
 =cut
 
-       
+
 sub get_SeqFeature_by_id {
    my ($self) = @_;
    $self->warn("Abstract method get_SeqFeature_by_id  encountered " .
@@ -305,10 +306,3 @@ sub get_SeqFeature_by_id {
 
 
 1;
-
-
-
-
-
-
-
